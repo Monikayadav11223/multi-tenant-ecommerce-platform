@@ -18,7 +18,8 @@ function isAuthenticatedUserPayload(
   value: JwtPayload,
 ): value is JwtPayload & AuthenticatedUser {
   return (
-    typeof value.userId === "string" &&
+    typeof value.id === "string" &&
+    typeof value.email === "string" &&
     isUserRole(value.role)
   );
 }
@@ -41,7 +42,8 @@ export function verifyAccessToken(token: string): AuthenticatedUser {
     }
 
     return {
-      userId: decodedToken.userId,
+      id: decodedToken.id,
+      email: decodedToken.email,
       role: decodedToken.role,
     };
   } catch (error) {

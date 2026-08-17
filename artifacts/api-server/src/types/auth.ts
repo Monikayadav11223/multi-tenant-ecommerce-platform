@@ -7,6 +7,7 @@ export const USER_ROLES = [
 export type UserRole = (typeof USER_ROLES)[number];
 
 export interface AuthenticatedUser {
-  userId: string;
+  id: string;
+  email: string;
   role: UserRole;
 }
