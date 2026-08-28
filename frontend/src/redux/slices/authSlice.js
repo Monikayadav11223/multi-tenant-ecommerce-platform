@@ -17,7 +17,7 @@ export const register = createAsyncThunk('auth/register', async (userData, thunk
     localStorage.setItem('user', JSON.stringify(response.data));
     return response.data;
   } catch (error) {
-    return thunkAPI.rejectWithValue(error.response.data.message || 'Registration failed');
+    return thunkAPI.rejectWithValue(error.response?.data?.message || error.message || 'Registration failed');
   }
 });
 
@@ -27,7 +27,7 @@ export const login = createAsyncThunk('auth/login', async (userData, thunkAPI) =
     localStorage.setItem('user', JSON.stringify(response.data));
     return response.data;
   } catch (error) {
-    return thunkAPI.rejectWithValue(error.response.data.message || 'Login failed');
+    return thunkAPI.rejectWithValue(error.response?.data?.message || error.message || 'Login failed');
   }
 });
 
@@ -41,6 +41,10 @@ const authSlice = createSlice({
   reducers: {
     clearError: (state) => {
       state.error = null;
+    },
+    setCredentials: (state, action) => {
+      state.user = action.payload;
+      localStorage.setItem('user', JSON.stringify({ ...state.user, token: state.token }));
     }
   },
   extraReducers: (builder) => {
@@ -81,5 +85,5 @@ const authSlice = createSlice({
   },
 });
 
-export const { clearError } = authSlice.actions;
+export const { clearError, setCredentials } = authSlice.actions;
 export default authSlice.reducer;

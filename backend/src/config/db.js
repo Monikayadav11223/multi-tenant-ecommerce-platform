@@ -3,27 +3,17 @@ const { MongoMemoryServer } = require('mongodb-memory-server');
 
 const connectDB = async () => {
   try {
-    let mongoUri = process.env.MONGO_URI;
+    const mongoUri = process.env.MONGO_URI;
 
-    if (mongoUri && (mongoUri.includes('127.0.0.1') || mongoUri.includes('localhost'))) {
-        console.log("Attempting to connect to local MongoDB...");
-        try {
-          await mongoose.connect(mongoUri, { serverSelectionTimeoutMS: 2000 });
-          console.log(`MongoDB Connected (Local): ${mongoose.connection.host}`);
-          return;
-        } catch (e) {
-          console.log("Local MongoDB not found. Spinning up an IN-MEMORY MongoDB database for development testing...");
-          const mongoServer = await MongoMemoryServer.create();
-          mongoUri = mongoServer.getUri();
-        }
-    } else if (!mongoUri) {
-        console.log("No MONGO_URI found. Spinning up an IN-MEMORY MongoDB database for development testing...");
-        const mongoServer = await MongoMemoryServer.create();
-        mongoUri = mongoServer.getUri();
+    if (!mongoUri) {
+      console.error('CRITICAL ERROR: MONGO_URI environment variable is not defined.');
+      console.error('Please configure your MongoDB connection string in the .env file.');
+      process.exit(1);
     }
 
-    const conn = await mongoose.connect(mongoUri);
-    console.log(`MongoDB Connected (In-Memory/Cloud): ${conn.connection.host}`);
+    console.log("Attempting to connect to MongoDB...");
+    const conn = await mongoose.connect(mongoUri, { serverSelectionTimeoutMS: 5000 });
+    console.log(`MongoDB Connected: ${conn.connection.host}`);
   } catch (error) {
     console.error(`Error: ${error.message}`);
     process.exit(1);

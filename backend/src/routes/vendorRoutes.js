@@ -11,7 +11,12 @@ const {
   getVendorProductById,
   createVendorProduct,
   updateVendorProduct,
-  deleteVendorProduct
+  deleteVendorProduct,
+
+  getVendorOrders,
+  updateVendorOrderStatus,
+  getVendorCustomers,
+  getVendorAnalytics
 } = require('../controllers/vendorController');
 
 // All routes require authentication and Vendor role
@@ -33,5 +38,21 @@ router.route('/products/:id')
   .get(getVendorProductById)
   .patch(upload.fields([{ name: 'images', maxCount: 10 }]), updateVendorProduct)
   .delete(deleteVendorProduct);
+
+
+// Order Routes
+router.route('/orders')
+  .get(getVendorOrders);
+
+router.route('/orders/:id')
+  .patch(updateVendorOrderStatus);
+
+// Customer Routes
+router.route('/customers')
+  .get(getVendorCustomers);
+
+// Analytics Routes
+router.route('/analytics')
+  .get(getVendorAnalytics);
 
 module.exports = router;

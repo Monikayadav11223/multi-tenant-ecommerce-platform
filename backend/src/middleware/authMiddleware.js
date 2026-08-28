@@ -18,6 +18,10 @@ const protect = async (req, res, next) => {
         return res.status(401).json({ message: 'Not authorized, user not found' });
       }
 
+      if (!req.user.isActive) {
+        return res.status(401).json({ message: 'Not authorized, account is deactivated' });
+      }
+
       next();
     } catch (error) {
       console.error(error);
