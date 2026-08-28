@@ -1,42 +1,11 @@
 const Product = require('../models/Product');
 
-// @desc    Create a product
-// @route   POST /api/products
-// @access  Private/Vendor
-const createProduct = async (req, res) => {
-  const { name, description, category, price, inventoryCount, images } = req.body;
-  
-  try {
-    // Crucial: Use storeId from the authenticated vendor's token
-    const storeId = req.user.storeId;
-
-    if (!storeId) {
-      return res.status(403).json({ message: 'User does not have an associated store' });
-    }
-
-    const product = await Product.create({
-      storeId,
-      name,
-      description,
-      category,
-      price,
-      inventoryCount,
-      images,
-    });
-
-    res.status(201).json(product);
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: 'Server Error' });
-  }
-};
-
 // @desc    Get all products (public)
 // @route   GET /api/products
 // @access  Public
 const getProducts = async (req, res) => {
   try {
-    const products = await Product.find({});
+    const products = await Product.find({ status: 'active' }).populate('storeId', 'name slug logo');
     res.json(products);
   } catch (error) {
     console.error(error);
@@ -44,45 +13,33 @@ const getProducts = async (req, res) => {
   }
 };
 
-// @desc    Get vendor's own products
-// @route   GET /api/products/my-products
-// @access  Private/Vendor
-const getMyProducts = async (req, res) => {
+// @desc    Get single product by ID (public)
+// @route   GET /api/products/:id
+// @access  Public
+const getProductById = async (req, res) => {
   try {
-    const storeId = req.user.storeId;
-    
-    if (!storeId) {
-      return res.status(403).json({ message: 'User does not have an associated store' });
+    const product = await Product.findById(req.params.id).populate('storeId', 'name slug logo');
+    if (!product) {
+      return res.status(404).json({ message: 'Product not found' });
     }
-
-    // Tenant isolation: Only find products matching the vendor's storeId
-    const products = await Product.find({ storeId });
-    res.json(products);
+    res.json(product);
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: 'Server Error' });
   }
 };
 
-// @desc    Delete a product
+// @desc    Delete a product (SuperAdmin only)
 // @route   DELETE /api/products/:id
-// @access  Private/SuperAdmin or Private/Vendor (owner)
+// @access  Private/SuperAdmin
 const deleteProduct = async (req, res) => {
   try {
     const product = await Product.findById(req.params.id);
     if (!product) {
       return res.status(404).json({ message: 'Product not found' });
     }
-
-    // Authorization check: Only SuperAdmin or the Vendor who owns the store can delete
-    if (req.user.role !== 'SuperAdmin') {
-      if (!req.user.storeId || product.storeId.toString() !== req.user.storeId.toString()) {
-        return res.status(403).json({ message: 'Not authorized to delete this product' });
-      }
-    }
-
     await Product.findByIdAndDelete(req.params.id);
-    res.json({ message: 'Product removed' });
+    res.json({ message: 'Product removed by SuperAdmin' });
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: 'Server Error' });
@@ -90,8 +47,7 @@ const deleteProduct = async (req, res) => {
 };
 
 module.exports = {
-  createProduct,
   getProducts,
-  getMyProducts,
+  getProductById,
   deleteProduct,
 };

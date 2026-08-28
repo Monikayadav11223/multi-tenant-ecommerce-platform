@@ -27,7 +27,7 @@ const VendorDashboard = () => {
   const lowStock = products.filter(p => p.inventoryCount <= 5).length;
 
   return (
-    <DashboardLayout links={vendorLinks}>
+    <DashboardLayout >
       <div className="mb-8">
         <h1 className="text-3xl font-bold text-gray-900">Good morning, {user?.name?.split(' ')[0]} 👋</h1>
         <p className="mt-2 text-gray-600">Here's what's happening with your store today.</p>

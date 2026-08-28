@@ -2,13 +2,29 @@ const Store = require('../models/Store');
 const Product = require('../models/Product');
 const User = require('../models/User');
 
-// @desc    Get all stores
+// @desc    Get all stores (Public)
 // @route   GET /api/stores
-// @access  Private/SuperAdmin
+// @access  Public
 const getStores = async (req, res) => {
   try {
-    const stores = await Store.find({}).populate('vendorId', 'name email');
+    const stores = await Store.find({ isActive: true }).select('-vendorId');
     res.json(stores);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Server Error' });
+  }
+};
+
+// @desc    Get store by ID (Public)
+// @route   GET /api/stores/:id
+// @access  Public
+const getStoreById = async (req, res) => {
+  try {
+    const store = await Store.findById(req.params.id).select('-vendorId');
+    if (!store) {
+      return res.status(404).json({ message: 'Store not found' });
+    }
+    res.json(store);
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: 'Server Error' });
@@ -42,5 +58,6 @@ const deleteStore = async (req, res) => {
 
 module.exports = {
   getStores,
+  getStoreById,
   deleteStore,
 };

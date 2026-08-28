@@ -11,6 +11,9 @@ import AdminDashboard from './pages/AdminDashboard';
 import Cart from './pages/Cart';
 import Checkout from './pages/Checkout';
 import ProtectedRoute from './components/ProtectedRoute';
+import ProductEditPage from './pages/ProductEditPage';
+import VendorStore from './pages/VendorStore';
+import VendorInventory from './pages/VendorInventory';
 
 function App() {
   return (
@@ -25,14 +28,34 @@ function App() {
             <Route path="/cart" element={<Cart />} />
             <Route path="/checkout" element={<ProtectedRoute allowedRoles={['Customer']}><Checkout /></ProtectedRoute>} />
             
-            <Route path="/vendor" element={
+            <Route path="/dashboard" element={
               <ProtectedRoute allowedRoles={['Vendor', 'SuperAdmin']}>
                 <VendorDashboard />
               </ProtectedRoute>
             } />
-            <Route path="/vendor/products" element={
+            <Route path="/dashboard/products" element={
               <ProtectedRoute allowedRoles={['Vendor', 'SuperAdmin']}>
                 <VendorProducts />
+              </ProtectedRoute>
+            } />
+            <Route path="/dashboard/products/new" element={
+              <ProtectedRoute allowedRoles={['Vendor', 'SuperAdmin']}>
+                <ProductEditPage />
+              </ProtectedRoute>
+            } />
+            <Route path="/dashboard/products/:id/edit" element={
+              <ProtectedRoute allowedRoles={['Vendor', 'SuperAdmin']}>
+                <ProductEditPage />
+              </ProtectedRoute>
+            } />
+            <Route path="/dashboard/inventory" element={
+              <ProtectedRoute allowedRoles={['Vendor', 'SuperAdmin']}>
+                <VendorInventory />
+              </ProtectedRoute>
+            } />
+            <Route path="/dashboard/store" element={
+              <ProtectedRoute allowedRoles={['Vendor', 'SuperAdmin']}>
+                <VendorStore />
               </ProtectedRoute>
             } />
             
@@ -41,7 +64,6 @@ function App() {
                 <CustomerDashboard />
               </ProtectedRoute>
             } />
-            
             <Route path="/admin/*" element={
               <ProtectedRoute allowedRoles={['SuperAdmin']}>
                 <AdminDashboard />
