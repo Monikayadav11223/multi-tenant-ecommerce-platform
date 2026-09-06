@@ -1,0 +1,28 @@
+kind = "web"
+previewPath = "/"
+title = "Meridian Marketplace"
+description = "A premium multi-vendor fashion and lifestyle marketplace where shoppers discover independent stores, browse curated collections, and manage their cart."
+version = "1.0.0"
+id = "artifacts/meridian-marketplace"
+router = "path"
+
+[[services]]
+name = "web"
+paths = [ "/" ]
+localPort = 19486
+
+[services.development]
+run = "pnpm --filter @workspace/meridian-marketplace run dev"
+
+[services.production]
+build = [ "pnpm", "--filter", "@workspace/meridian-marketplace", "run", "build" ]
+serve = "static"
+publicDir = "artifacts/meridian-marketplace/dist/public"
+
+[[services.production.rewrites]]
+from = "/*"
+to = "/index.html"
+
+[services.env]
+PORT = "19486"
+BASE_PATH = "/"
