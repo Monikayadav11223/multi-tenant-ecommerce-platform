@@ -2,7 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { ShoppingCart, Heart, ImageOff } from 'lucide-react';
 
-const ProductCard = ({ product, onAddToCart, showVendor = true }) => {
+const ProductCard = ({ product, onAddToCart, showVendor = true, onToggleWishlist, isWishlisted = false }) => {
   const hasImage = product.images && product.images.length > 0;
   
   return (
@@ -41,9 +41,11 @@ const ProductCard = ({ product, onAddToCart, showVendor = true }) => {
           )}
         </div>
 
-        {/* Wishlist Button */}
-        <button className="absolute top-4 right-4 p-2.5 bg-white/90 backdrop-blur-md rounded-full text-slate-400 hover:text-red-500 hover:bg-white shadow-sm transition-all z-10 border border-white/50">
-          <Heart className="w-4 h-4" />
+        <button 
+          onClick={(e) => { e.preventDefault(); e.stopPropagation(); onToggleWishlist && onToggleWishlist(product); }}
+          className="absolute top-4 right-4 p-2.5 bg-white/90 backdrop-blur-md rounded-full text-slate-400 hover:text-red-500 hover:bg-white shadow-sm transition-all z-10 border border-white/50"
+        >
+          <Heart className={`w-4 h-4 ${isWishlisted ? 'fill-red-500 text-red-500' : ''}`} />
         </button>
       </div>
 

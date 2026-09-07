@@ -69,12 +69,14 @@ const Register = () => {
         {/* Top Role Switcher (Replaces generic tabs for a premium feel) */}
         <div className="absolute top-8 right-8 flex bg-slate-100 p-1 rounded-full">
           <button 
+            type="button"
             onClick={() => setFormData({...formData, role: 'Customer'})}
             className={`px-4 py-1.5 text-sm font-semibold rounded-full transition-all ${role === 'Customer' ? 'bg-white shadow text-slate-900' : 'text-slate-500 hover:text-slate-700'}`}
           >
             Customer
           </button>
           <button 
+            type="button"
             onClick={() => setFormData({...formData, role: 'Vendor'})}
             className={`px-4 py-1.5 text-sm font-semibold rounded-full transition-all ${role === 'Vendor' ? 'bg-white shadow text-slate-900' : 'text-slate-500 hover:text-slate-700'}`}
           >

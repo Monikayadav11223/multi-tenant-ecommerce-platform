@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Link } from 'react-router-dom';
-import { fetchWishlist, toggleWishlistItem } from '../redux/slices/wishlistSlice';
+import { fetchWishlist, removeFromWishlist } from '../redux/slices/wishlistSlice';
 import { addToCart } from '../redux/slices/cartSlice';
 import ProductCard from '../components/ui/ProductCard';
 import EmptyState from '../components/ui/EmptyState';
@@ -14,6 +14,10 @@ const Wishlist = () => {
   useEffect(() => {
     dispatch(fetchWishlist());
   }, [dispatch]);
+
+  const handleRemove = (productId) => {
+    dispatch(removeFromWishlist(productId));
+  };
 
   const handleAddToCart = (product) => {
     dispatch(addToCart({
@@ -62,6 +66,8 @@ const Wishlist = () => {
                 key={product._id} 
                 product={product} 
                 onAddToCart={handleAddToCart}
+                onToggleWishlist={() => handleRemove(product._id)}
+                isWishlisted={true}
               />
             ))}
           </div>

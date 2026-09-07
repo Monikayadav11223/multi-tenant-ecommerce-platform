@@ -6,19 +6,29 @@ export const fetchWishlist = createAsyncThunk('wishlist/fetchWishlist', async (_
     const { token } = getState().auth;
     const config = { headers: { Authorization: `Bearer ${token}` } };
     const { data } = await axios.get('/api/customer/wishlist', config);
-    return data.wishlist; // assuming it returns { wishlist: [...] }
+    return data; 
   } catch (error) {
     return rejectWithValue(error.response?.data?.message || error.message);
   }
 });
 
-export const toggleWishlistItem = createAsyncThunk('wishlist/toggleWishlistItem', async (productId, { getState, rejectWithValue }) => {
+export const addToWishlist = createAsyncThunk('wishlist/addToWishlist', async (productId, { getState, rejectWithValue }) => {
   try {
     const { token } = getState().auth;
     const config = { headers: { Authorization: `Bearer ${token}` } };
-    // Assuming a POST to toggle or add/remove
     const { data } = await axios.post('/api/customer/wishlist', { productId }, config);
-    return data.wishlist;
+    return data;
+  } catch (error) {
+    return rejectWithValue(error.response?.data?.message || error.message);
+  }
+});
+
+export const removeFromWishlist = createAsyncThunk('wishlist/removeFromWishlist', async (productId, { getState, rejectWithValue }) => {
+  try {
+    const { token } = getState().auth;
+    const config = { headers: { Authorization: `Bearer ${token}` } };
+    const { data } = await axios.delete(`/api/customer/wishlist/${productId}`, config);
+    return data;
   } catch (error) {
     return rejectWithValue(error.response?.data?.message || error.message);
   }
@@ -45,7 +55,10 @@ const wishlistSlice = createSlice({
         state.loading = false;
         state.error = action.payload;
       })
-      .addCase(toggleWishlistItem.fulfilled, (state, action) => {
+      .addCase(addToWishlist.fulfilled, (state, action) => {
+        state.items = action.payload || [];
+      })
+      .addCase(removeFromWishlist.fulfilled, (state, action) => {
         state.items = action.payload || [];
       });
   },

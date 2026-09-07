@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchProducts } from '../redux/slices/productSlice';
+import { addToCart } from '../redux/slices/cartSlice';
 import ProductCard from '../components/ui/ProductCard';
 
 import HeroSection from '../components/home/HeroSection';
@@ -16,6 +17,18 @@ const Home = () => {
   useEffect(() => {
     dispatch(fetchProducts());
   }, [dispatch]);
+
+  const handleAddToCart = (product) => {
+    dispatch(addToCart({
+      productId: product._id,
+      storeId: product.storeId,
+      price: product.price,
+      name: product.name,
+      image: product.images?.[0] || '',
+      inventoryCount: product.inventoryCount,
+      quantity: 1
+    }));
+  };
 
   // Use up to 8 active products for trending
   const trendingProducts = products?.filter(p => p.status === 'active').slice(0, 8) || [];
@@ -46,7 +59,7 @@ const Home = () => {
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
               {trendingProducts.map((product) => (
-                <ProductCard key={product._id} product={product} />
+                <ProductCard key={product._id} product={product} onAddToCart={handleAddToCart} />
               ))}
             </div>
           )}
