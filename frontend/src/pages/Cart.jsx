@@ -1,7 +1,7 @@
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Link } from 'react-router-dom';
-import { updateQuantity, removeFromCart, clearCart } from '../redux/slices/cartSlice';
+import { removeFromCart, increaseQuantity, decreaseQuantity, clearCart } from '../redux/slices/cartSlice';
 import Button from '../components/ui/Button';
 import EmptyState from '../components/ui/EmptyState';
 import { ShoppingCart, Trash2, Plus, Minus, ArrowRight } from 'lucide-react';

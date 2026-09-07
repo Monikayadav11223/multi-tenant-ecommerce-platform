@@ -7,6 +7,7 @@ import Register from './pages/Register';
 import VendorDashboard from './pages/VendorDashboard';
 import VendorProducts from './pages/VendorProducts';
 import CustomerDashboard from './pages/CustomerDashboard';
+import CustomerOrders from './pages/CustomerOrders';
 import AdminDashboard from './pages/AdminDashboard';
 import AdminVendors from './pages/AdminVendors';
 import AdminStores from './pages/AdminStores';
@@ -15,6 +16,9 @@ import AdminProducts from './pages/AdminProducts';
 import AdminOrders from './pages/AdminOrders';
 import Cart from './pages/Cart';
 import Checkout from './pages/Checkout';
+import Success from './pages/Success';
+import Cancel from './pages/Cancel';
+import Wishlist from './pages/Wishlist';
 import ProtectedRoute from './components/ProtectedRoute';
 import ProductEditPage from './pages/ProductEditPage';
 import VendorStore from './pages/VendorStore';
@@ -40,8 +44,11 @@ function App() {
               <Route path="/login" element={<Login />} />
               <Route path="/register" element={<Register />} />
               <Route path="/cart" element={<Cart />} />
+              <Route path="/wishlist" element={<ProtectedRoute allowedRoles={['Customer']}><Wishlist /></ProtectedRoute>} />
               <Route path="/store/:slug" element={<PublicStore />} />
               <Route path="/checkout" element={<ProtectedRoute allowedRoles={['Customer']}><Checkout /></ProtectedRoute>} />
+              <Route path="/checkout/success" element={<ProtectedRoute allowedRoles={['Customer']}><Success /></ProtectedRoute>} />
+              <Route path="/checkout/cancel" element={<ProtectedRoute allowedRoles={['Customer']}><Cancel /></ProtectedRoute>} />
               
               <Route path="/dashboard" element={
                 <ProtectedRoute allowedRoles={['Vendor', 'SuperAdmin']}>
@@ -97,6 +104,11 @@ function App() {
               <Route path="/customer" element={
                 <ProtectedRoute allowedRoles={['Customer', 'SuperAdmin']}>
                   <CustomerDashboard />
+                </ProtectedRoute>
+              } />
+              <Route path="/customer/orders" element={
+                <ProtectedRoute allowedRoles={['Customer', 'SuperAdmin']}>
+                  <CustomerOrders />
                 </ProtectedRoute>
               } />
               <Route path="/admin" element={

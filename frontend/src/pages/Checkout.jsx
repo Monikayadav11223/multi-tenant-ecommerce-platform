@@ -1,22 +1,56 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 import Input from '../components/ui/Input';
 import Button from '../components/ui/Button';
 
 const Checkout = () => {
   const { items, totalAmount } = useSelector((state) => state.cart);
+  const { token } = useSelector((state) => state.auth);
   const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
+  const [formData, setFormData] = useState({
+    fullName: '',
+    address: '',
+    city: '',
+    state: '',
+    postalCode: '',
+    country: '',
+    phone: '',
+  });
 
   if (items.length === 0) {
     navigate('/cart');
     return null;
   }
 
-  const handleCheckout = (e) => {
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleCheckout = async (e) => {
     e.preventDefault();
-    // Simulate payment / checkout process
-    alert("Checkout process initiated! Backend integration pending.");
+    setLoading(true);
+    try {
+      const config = { headers: { Authorization: `Bearer ${token}` } };
+      const response = await axios.post('/api/payments/create-checkout-session', {
+        items,
+        shippingAddress: formData
+      }, config);
+      
+      if (response.data && response.data.url) {
+        window.location.href = response.data.url;
+      } else {
+        alert("Payment session creation failed.");
+        setLoading(false);
+      }
+    } catch (error) {
+      console.error("Checkout error:", error);
+      alert("Error initiating checkout: " + (error.response?.data?.message || error.message));
+      setLoading(false);
+    }
   };
 
   return (
@@ -31,50 +65,41 @@ const Checkout = () => {
                 <h2 className="text-lg font-bold text-gray-900 mb-6">Shipping Information</h2>
                 <div className="grid grid-cols-1 gap-y-6 sm:grid-cols-2 sm:gap-x-4">
                   <div className="sm:col-span-2">
-                    <Input label="Full Name" required placeholder="Jane Doe" />
+                    <Input label="Full Name" name="fullName" value={formData.fullName} onChange={handleInputChange} required placeholder="Jane Doe" />
                   </div>
                   <div className="sm:col-span-2">
-                    <Input label="Address" required placeholder="123 Main St" />
+                    <Input label="Address" name="address" value={formData.address} onChange={handleInputChange} required placeholder="123 Main St" />
                   </div>
                   <div>
-                    <Input label="City" required placeholder="New York" />
+                    <Input label="City" name="city" value={formData.city} onChange={handleInputChange} required placeholder="New York" />
                   </div>
                   <div>
-                    <Input label="State / Province" required placeholder="NY" />
+                    <Input label="State / Province" name="state" value={formData.state} onChange={handleInputChange} required placeholder="NY" />
                   </div>
                   <div>
-                    <Input label="Postal code" required placeholder="10001" />
+                    <Input label="Postal code" name="postalCode" value={formData.postalCode} onChange={handleInputChange} required placeholder="10001" />
                   </div>
                   <div>
-                    <Input label="Country" required placeholder="United States" />
+                    <Input label="Country" name="country" value={formData.country} onChange={handleInputChange} required placeholder="United States" />
                   </div>
                   <div className="sm:col-span-2">
-                    <Input label="Phone" type="tel" required placeholder="(555) 555-5555" />
+                    <Input label="Phone" name="phone" value={formData.phone} onChange={handleInputChange} type="tel" required placeholder="(555) 555-5555" />
                   </div>
                 </div>
               </div>
 
               <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-8">
-                <h2 className="text-lg font-bold text-gray-900 mb-6">Payment Details</h2>
+                <h2 className="text-lg font-bold text-gray-900 mb-6">Payment Method</h2>
                 <div className="space-y-6">
                   <div className="bg-indigo-50 border border-indigo-200 rounded-lg p-4 text-sm text-indigo-700">
-                    This platform is currently in test mode. Do not enter real credit card information.
-                  </div>
-                  <Input label="Card number" placeholder="0000 0000 0000 0000" />
-                  <div className="grid grid-cols-3 gap-4">
-                    <div className="col-span-2">
-                      <Input label="Expiration date (MM/YY)" placeholder="12/24" />
-                    </div>
-                    <div>
-                      <Input label="CVC" placeholder="123" />
-                    </div>
+                    You will be redirected to Stripe's secure checkout page to complete your payment.
                   </div>
                 </div>
               </div>
 
               <div className="mt-8 flex justify-end">
-                <Button type="submit" size="lg" className="w-full sm:w-auto">
-                  Confirm order - ₹{(totalAmount * 1.18).toLocaleString('en-IN')}
+                <Button type="submit" size="lg" className="w-full sm:w-auto" disabled={loading}>
+                  {loading ? 'Processing...' : `Pay securely with Stripe - ₹${(totalAmount * 1.18).toLocaleString('en-IN')}`}
                 </Button>
               </div>
             </form>
@@ -85,9 +110,9 @@ const Checkout = () => {
               <h2 className="text-lg font-bold text-gray-900 mb-6">Order summary</h2>
               <ul className="divide-y divide-gray-200 mb-6">
                 {items.map((item) => (
-                  <li key={item._id} className="py-4 flex">
+                  <li key={item.productId} className="py-4 flex">
                     <div className="flex-shrink-0 w-16 h-16 bg-gray-100 rounded-lg border border-gray-200 overflow-hidden">
-                      {item.images?.[0] && <img src={item.images[0]} alt="" className="w-full h-full object-cover" />}
+                      {item.image && <img src={item.image} alt="" className="w-full h-full object-cover" />}
                     </div>
                     <div className="ml-4 flex-1 flex flex-col justify-center">
                       <div className="flex justify-between items-start">

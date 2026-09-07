@@ -28,15 +28,17 @@ const cartSlice = createSlice({
   initialState,
   reducers: {
     addToCart: (state, action) => {
-      const product = action.payload;
-      const existingItem = state.items.find((item) => item._id === product._id);
+      const { productId, storeId, price, name, image, inventoryCount, quantity = 1 } = action.payload;
+      const existingItem = state.items.find((item) => item.productId === productId);
       
       if (existingItem) {
-        if (existingItem.quantity < product.inventoryCount) {
-          existingItem.quantity += 1;
+        if (existingItem.quantity + quantity <= existingItem.inventoryCount) {
+          existingItem.quantity += quantity;
+        } else {
+          existingItem.quantity = existingItem.inventoryCount;
         }
       } else {
-        state.items.push({ ...product, quantity: 1 });
+        state.items.push({ productId, storeId, price, name, image, inventoryCount, quantity });
       }
       
       state.totalAmount = state.items.reduce((total, item) => total + item.price * item.quantity, 0);
@@ -44,18 +46,27 @@ const cartSlice = createSlice({
     },
     removeFromCart: (state, action) => {
       const productId = action.payload;
-      state.items = state.items.filter((item) => item._id !== productId);
+      state.items = state.items.filter((item) => item.productId !== productId);
       state.totalAmount = state.items.reduce((total, item) => total + item.price * item.quantity, 0);
       saveCartToStorage(state);
     },
-    updateQuantity: (state, action) => {
-      const { id, quantity } = action.payload;
-      const existingItem = state.items.find((item) => item._id === id);
+    increaseQuantity: (state, action) => {
+      const productId = action.payload;
+      const existingItem = state.items.find((item) => item.productId === productId);
       
-      if (existingItem) {
-        if (quantity > 0 && quantity <= existingItem.inventoryCount) {
-          existingItem.quantity = quantity;
-        }
+      if (existingItem && existingItem.quantity < existingItem.inventoryCount) {
+        existingItem.quantity += 1;
+      }
+      
+      state.totalAmount = state.items.reduce((total, item) => total + item.price * item.quantity, 0);
+      saveCartToStorage(state);
+    },
+    decreaseQuantity: (state, action) => {
+      const productId = action.payload;
+      const existingItem = state.items.find((item) => item.productId === productId);
+      
+      if (existingItem && existingItem.quantity > 1) {
+        existingItem.quantity -= 1;
       }
       
       state.totalAmount = state.items.reduce((total, item) => total + item.price * item.quantity, 0);
@@ -69,5 +80,5 @@ const cartSlice = createSlice({
   },
 });
 
-export const { addToCart, removeFromCart, updateQuantity, clearCart } = cartSlice.actions;
+export const { addToCart, removeFromCart, increaseQuantity, decreaseQuantity, clearCart } = cartSlice.actions;
 export default cartSlice.reducer;

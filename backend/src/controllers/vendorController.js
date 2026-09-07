@@ -54,6 +54,10 @@ const createVendorStore = async (req, res) => {
       banner,
     });
 
+    const user = await User.findById(req.user._id);
+    user.storeId = store._id;
+    await user.save();
+
     res.status(201).json(store);
   } catch (error) {
     console.error(error);
@@ -261,7 +265,7 @@ const getVendorOrders = async (req, res) => {
     }
     const orders = await Order.find({ storeId: req.user.storeId })
       .populate('customerId', 'name email')
-      .populate('products.productId', 'name images price')
+      .populate('items.productId', 'name images price')
       .sort({ createdAt: -1 });
     res.json(orders);
   } catch (error) {
@@ -354,7 +358,7 @@ const getVendorAnalytics = async (req, res) => {
     
     let productsSold = 0;
     orders.forEach(order => {
-       order.products.forEach(item => {
+       order.items.forEach(item => {
            productsSold += item.quantity;
        });
     });

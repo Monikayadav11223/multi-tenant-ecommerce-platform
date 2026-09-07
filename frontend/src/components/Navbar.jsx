@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { logout } from '../redux/slices/authSlice';
-import { ShoppingCart, Search, Menu, X, User, LogOut, LayoutDashboard, Store, Package, ShoppingBag, BarChart3, Users } from 'lucide-react';
+import { Heart, ShoppingCart, Search, Menu, X, User, LogOut, LayoutDashboard, Store, Package, ShoppingBag, BarChart3, Users } from 'lucide-react';
 
 const Navbar = () => {
   const { isAuthenticated, user } = useSelector((state) => state.auth);
@@ -67,6 +67,10 @@ const Navbar = () => {
               <Search className="w-5 h-5" />
             </button>
             
+            <Link to="/wishlist" className="text-gray-500 hover:text-indigo-600 transition p-1 rounded-full hover:bg-gray-50">
+              <Heart className="w-5 h-5" />
+            </Link>
+
             <Link to="/cart" className="text-gray-500 hover:text-indigo-600 transition relative p-1 rounded-full hover:bg-gray-50">
               <ShoppingCart className="w-5 h-5" />
               {cartItemCount > 0 && (

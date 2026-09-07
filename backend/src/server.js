@@ -12,6 +12,10 @@ const app = express();
 // Middleware
 app.use(helmet());
 app.use(cors());
+
+// Stripe Webhook MUST have the raw body, so we use express.raw for it BEFORE express.json()
+app.use('/api/payments/webhook', express.raw({ type: 'application/json' }));
+
 app.use(express.json());
 
 // Basic Route for testing
@@ -27,6 +31,8 @@ app.use('/api/users', require('./routes/userRoutes'));
 app.use('/api/stores', require('./routes/storeRoutes'));
 app.use('/api/vendor', require('./routes/vendorRoutes'));
 app.use('/api/admin', require('./routes/adminRoutes'));
+app.use('/api/customer', require('./routes/customerRoutes'));
+app.use('/api/payments', require('./routes/paymentRoutes'));
 app.use('/api/test', require('./routes/testRoutes'));
 
 // Error handling middleware

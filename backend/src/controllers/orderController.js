@@ -40,7 +40,7 @@ const addOrderItems = async (req, res) => {
 // @access  Private/Customer
 const getMyOrders = async (req, res) => {
   try {
-    const orders = await Order.find({ user: req.user._id });
+    const orders = await Order.find({ customerId: req.user._id }).populate('storeId', 'name slug').populate('items.productId', 'name image price');
     res.json(orders);
   } catch (error) {
     console.error(error);
@@ -58,7 +58,9 @@ const getVendorOrders = async (req, res) => {
        return res.status(403).json({ message: 'User does not have an associated store' });
     }
     // Isolate data to only this tenant
-    const orders = await Order.find({ storeId }).populate('user', 'id name');
+    const orders = await Order.find({ storeId })
+      .populate('customerId', 'name email')
+      .populate('items.productId', 'name images price');
     res.json(orders);
   } catch (error) {
     console.error(error);
