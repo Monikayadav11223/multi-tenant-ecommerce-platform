@@ -2,15 +2,13 @@ import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { login, clearError } from '../redux/slices/authSlice';
 import { useNavigate, Link, useLocation } from 'react-router-dom';
-import { Mail, Lock, AlertCircle, ShoppingBag, Eye, EyeOff, Loader2, ArrowRight } from 'lucide-react';
-import { motion, AnimatePresence } from 'framer-motion';
-import clsx from 'clsx';
+import { Mail, Lock, Eye, EyeOff, Loader2, ArrowRight, ShoppingBag, Store, ShieldCheck } from 'lucide-react';
+import GradientText from '../components/ui/GradientText';
 
 const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
-  const [focusedInput, setFocusedInput] = useState(null);
   
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -39,232 +37,109 @@ const Login = () => {
   };
 
   return (
-    <div className="min-h-screen flex bg-white font-sans text-slate-900 selection:bg-indigo-200">
+    <div className="min-h-screen bg-white flex mt-10">
       
-      {/* LEFT SIDE - Cinematic Visual */}
-      <div className="hidden lg:flex lg:w-1/2 relative flex-col justify-between overflow-hidden bg-slate-950">
+      {/* LEFT: FORM */}
+      <div className="w-full lg:w-1/2 flex flex-col justify-center px-8 sm:px-16 lg:px-24 py-12 relative z-10">
         
-        {/* Animated Gradient Background */}
-        <div className="absolute inset-0 z-0">
-          <div className="absolute top-0 -left-1/4 w-3/4 h-3/4 bg-indigo-600/30 rounded-full mix-blend-screen filter blur-[120px] animate-float"></div>
-          <div className="absolute bottom-0 -right-1/4 w-3/4 h-3/4 bg-violet-600/30 rounded-full mix-blend-screen filter blur-[120px] animate-float-delayed"></div>
-        </div>
+        <div className="max-w-md w-full mx-auto">
+          <h1 className="text-4xl sm:text-5xl font-extrabold text-slate-900 mb-4 leading-tight">
+            Welcome<br />
+            <GradientText>Back.</GradientText>
+          </h1>
+          
+          <p className="text-slate-500 mb-10">
+            Log in to your MultiStore account to continue your journey.
+          </p>
 
-        {/* Floating Particles / Abstract Shapes */}
-        <div className="absolute inset-0 z-0 opacity-20">
-          <svg className="absolute left-[10%] top-[20%] animate-float" width="120" height="120" viewBox="0 0 100 100" fill="none">
-            <circle cx="50" cy="50" r="40" stroke="white" strokeWidth="1" strokeDasharray="4 4" />
-          </svg>
-          <svg className="absolute right-[15%] top-[60%] animate-float-delayed" width="80" height="80" viewBox="0 0 100 100" fill="none">
-            <rect x="20" y="20" width="60" height="60" stroke="white" strokeWidth="1" transform="rotate(45 50 50)" />
-          </svg>
-        </div>
-
-        {/* Content */}
-        <div className="relative z-10 flex items-center p-12">
-          <Link to="/" className="flex items-center gap-3 group">
-            <div className="w-10 h-10 bg-white rounded-xl flex items-center justify-center shadow-lg shadow-white/10 group-hover:scale-105 transition-transform">
-              <ShoppingBag className="w-6 h-6 text-indigo-600" />
+          {error && (
+            <div className="bg-red-50 text-red-600 p-4 rounded-xl mb-6 text-sm font-medium border border-red-100">
+              {error}
             </div>
-            <span className="text-2xl font-bold text-white tracking-tight">MultiStore</span>
-          </Link>
-        </div>
+          )}
 
-        <div className="relative z-10 px-12 lg:px-20 pb-20">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.2 }}
-          >
-            <h1 className="text-5xl lg:text-6xl font-extrabold text-white tracking-tight mb-6 leading-[1.1]">
-              Shop smarter.<br />
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-violet-400">Build bigger.</span>
-            </h1>
-            <p className="text-slate-300 text-lg leading-relaxed max-w-md">
-              Join thousands of vendors and customers on the most powerful multi-tenant e-commerce platform. Your marketplace awaits.
-            </p>
-          </motion.div>
-
-          {/* Floating Product Cards (Visual only) */}
-          <motion.div 
-            className="mt-12 relative h-48 max-w-md"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 1, delay: 0.5 }}
-          >
-            <div className="absolute top-0 left-0 glass-dark rounded-2xl p-4 w-48 shadow-2xl animate-float z-20 rotate-[-4deg]">
-              <div className="w-full h-24 bg-slate-800 rounded-lg mb-3"></div>
-              <div className="w-3/4 h-3 bg-slate-700 rounded mb-2"></div>
-              <div className="w-1/2 h-4 bg-indigo-500 rounded"></div>
-            </div>
-            <div className="absolute top-8 left-32 glass-dark rounded-2xl p-4 w-56 shadow-2xl animate-float-delayed z-10 rotate-[6deg]">
-              <div className="flex gap-3 mb-3">
-                <div className="w-12 h-12 bg-slate-800 rounded-full"></div>
-                <div>
-                  <div className="w-24 h-3 bg-slate-700 rounded mb-2 mt-1"></div>
-                  <div className="w-16 h-2 bg-slate-600 rounded"></div>
+          <form onSubmit={onSubmit} className="space-y-6">
+            <div>
+              <label className="block text-sm font-medium text-slate-700 mb-1.5">Email Address</label>
+              <div className="relative">
+                <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-400">
+                  <Mail className="h-5 w-5" />
                 </div>
-              </div>
-              <div className="w-full h-8 bg-violet-500/20 rounded border border-violet-500/30 mt-4"></div>
-            </div>
-          </motion.div>
-        </div>
-      </div>
-
-      {/* RIGHT SIDE - Authentication Surface */}
-      <div className="flex-1 flex flex-col justify-center py-12 px-4 sm:px-6 lg:px-20 xl:px-32 relative overflow-hidden">
-        
-        {/* Mobile Logo */}
-        <div className="lg:hidden absolute top-8 left-8">
-          <Link to="/" className="flex items-center gap-2">
-            <div className="w-8 h-8 bg-indigo-600 rounded-lg flex items-center justify-center shadow-md">
-              <ShoppingBag className="w-4 h-4 text-white" />
-            </div>
-            <span className="text-xl font-bold text-slate-900">MultiStore</span>
-          </Link>
-        </div>
-
-        <motion.div 
-          className="mx-auto w-full max-w-md z-10"
-          initial={{ opacity: 0, x: 20 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.5, type: "spring", bounce: 0.3 }}
-        >
-          <div className="text-center lg:text-left mb-10">
-            <h2 className="text-3xl font-extrabold tracking-tight text-slate-900 mb-2">Welcome back</h2>
-            <p className="text-slate-500">Sign in to continue to your marketplace.</p>
-          </div>
-
-          <AnimatePresence>
-            {error && (
-              <motion.div 
-                initial={{ opacity: 0, height: 0, mb: 0 }}
-                animate={{ opacity: 1, height: 'auto', mb: 24 }}
-                exit={{ opacity: 0, height: 0, mb: 0 }}
-                className="overflow-hidden"
-              >
-                <div className="bg-red-50 border border-red-100 rounded-xl p-4 flex items-start shadow-sm">
-                  <AlertCircle className="h-5 w-5 text-red-500 mt-0.5 mr-3 flex-shrink-0" />
-                  <p className="text-sm text-red-800">{error}</p>
-                </div>
-              </motion.div>
-            )}
-          </AnimatePresence>
-
-          <form onSubmit={onSubmit} className="space-y-5">
-            {/* Custom Input: Email */}
-            <div className="space-y-1.5">
-              <label className="block text-sm font-semibold text-slate-700">Email address</label>
-              <div className="relative group">
-                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <Mail className={clsx("h-5 w-5 transition-colors duration-200", focusedInput === 'email' ? "text-indigo-600" : "text-slate-400")} />
-                </div>
-                <input
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  onFocus={() => setFocusedInput('email')}
-                  onBlur={() => setFocusedInput(null)}
-                  required
-                  placeholder="you@example.com"
-                  className={clsx(
-                    "block w-full pl-10 pr-3 py-3 rounded-xl border sm:text-sm transition-all duration-200 outline-none shadow-sm",
-                    focusedInput === 'email' 
-                      ? "border-indigo-600 ring-4 ring-indigo-600/10 bg-white" 
-                      : "border-slate-200 bg-slate-50 hover:bg-white"
-                  )}
-                />
+                <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} required
+                  className="block w-full pl-11 pr-4 py-3.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 focus:ring-2 focus:ring-indigo-500 focus:bg-white transition-all outline-none"
+                  placeholder="you@example.com" />
               </div>
             </div>
 
-            {/* Custom Input: Password */}
-            <div className="space-y-1.5">
-              <label className="block text-sm font-semibold text-slate-700">Password</label>
-              <div className="relative group">
-                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <Lock className={clsx("h-5 w-5 transition-colors duration-200", focusedInput === 'password' ? "text-indigo-600" : "text-slate-400")} />
+            <div>
+              <div className="flex justify-between items-center mb-1.5">
+                <label className="block text-sm font-medium text-slate-700">Password</label>
+                <Link to="#" className="text-sm font-semibold text-indigo-600 hover:text-indigo-700">Forgot Password?</Link>
+              </div>
+              <div className="relative">
+                <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-400">
+                  <Lock className="h-5 w-5" />
                 </div>
-                <input
-                  type={showPassword ? 'text' : 'password'}
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  onFocus={() => setFocusedInput('password')}
-                  onBlur={() => setFocusedInput(null)}
-                  required
-                  placeholder="••••••••"
-                  className={clsx(
-                    "block w-full pl-10 pr-10 py-3 rounded-xl border sm:text-sm transition-all duration-200 outline-none shadow-sm",
-                    focusedInput === 'password' 
-                      ? "border-indigo-600 ring-4 ring-indigo-600/10 bg-white" 
-                      : "border-slate-200 bg-slate-50 hover:bg-white"
-                  )}
-                />
-                <button
-                  type="button"
-                  onClick={() => setShowPassword(!showPassword)}
-                  className="absolute inset-y-0 right-0 pr-3 flex items-center text-slate-400 hover:text-slate-600 focus:outline-none transition-colors"
-                >
+                <input type={showPassword ? 'text' : 'password'} value={password} onChange={(e) => setPassword(e.target.value)} required
+                  className="block w-full pl-11 pr-12 py-3.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 focus:ring-2 focus:ring-indigo-500 focus:bg-white transition-all outline-none"
+                  placeholder="••••••••" />
+                <div className="absolute inset-y-0 right-0 pr-4 flex items-center cursor-pointer text-slate-400 hover:text-slate-600" onClick={() => setShowPassword(!showPassword)}>
                   {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
-                </button>
+                </div>
               </div>
             </div>
 
-            {/* Options */}
-            <div className="flex items-center justify-between pt-1">
-              <div className="flex items-center">
-                <input 
-                  id="remember-me" 
-                  name="remember-me" 
-                  type="checkbox" 
-                  className="h-4 w-4 rounded border-slate-300 text-indigo-600 focus:ring-indigo-600 transition-colors" 
-                />
-                <label htmlFor="remember-me" className="ml-2 block text-sm text-slate-600 cursor-pointer select-none">Remember me</label>
-              </div>
-              <a href="#" className="text-sm font-semibold text-indigo-600 hover:text-indigo-500 transition-colors">
-                Forgot password?
-              </a>
-            </div>
-
-            {/* Submit Button */}
-            <button
-              type="submit"
-              disabled={loading}
-              className="group relative w-full flex justify-center py-3.5 px-4 border border-transparent text-sm font-bold rounded-xl text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-600 overflow-hidden transition-all duration-200 shadow-md hover:shadow-lg disabled:opacity-70 disabled:cursor-not-allowed mt-4"
-            >
-              {/* Button gradient shine effect */}
-              <div className="absolute inset-0 -translate-x-full group-hover:animate-[shimmer_1.5s_infinite] bg-gradient-to-r from-transparent via-white/20 to-transparent z-0"></div>
-              
-              <div className="relative z-10 flex items-center">
-                {loading ? (
-                  <>
-                    <Loader2 className="animate-spin -ml-1 mr-2 h-5 w-5 text-white" />
-                    Signing in...
-                  </>
-                ) : (
-                  <>
-                    Sign In
-                    <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
-                  </>
-                )}
-              </div>
+            <button type="submit" disabled={loading} className="w-full mt-8 py-4 px-4 bg-slate-900 hover:bg-indigo-600 text-white text-base font-bold rounded-xl shadow-md transition-colors flex items-center justify-center group disabled:bg-slate-400">
+              {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : (
+                <>
+                  Sign In
+                  <ArrowRight className="w-5 h-5 ml-2 transform group-hover:translate-x-1 transition-transform" />
+                </>
+              )}
             </button>
           </form>
 
-          <p className="mt-8 text-center text-sm text-slate-500">
-            Don't have an account?{' '}
-            <Link to="/register" className="font-bold text-indigo-600 hover:text-indigo-500 transition-colors">
-              Create Account
-            </Link>
+          <p className="mt-8 text-center text-sm text-slate-600">
+            Don't have an account? <Link to="/register" className="font-bold text-indigo-600 hover:text-indigo-700 transition-colors">Sign Up</Link>
           </p>
-        </motion.div>
+
+          {/* Bottom Trust Row */}
+          <div className="mt-12 flex items-center justify-between border-t border-slate-100 pt-8">
+            <div className="flex flex-col items-center text-center"><ShoppingBag className="w-5 h-5 text-slate-400 mb-1" /><span className="text-xs font-medium text-slate-500">Shop</span></div>
+            <div className="flex flex-col items-center text-center"><ShieldCheck className="w-5 h-5 text-slate-400 mb-1" /><span className="text-xs font-medium text-slate-500">Secure</span></div>
+            <div className="flex flex-col items-center text-center"><Store className="w-5 h-5 text-slate-400 mb-1" /><span className="text-xs font-medium text-slate-500">Sell</span></div>
+          </div>
+        </div>
       </div>
-      
-      {/* Global Shimmer Animation definition */}
-      <style dangerouslySetInnerHTML={{__html: `
-        @keyframes shimmer {
-          100% { transform: translateX(100%); }
-        }
-      `}} />
+
+      {/* RIGHT: VISUAL PANEL */}
+      <div className="hidden lg:flex w-1/2 flex-col justify-between p-12 relative overflow-hidden bg-navy-900">
+        
+        {/* Background Atmosphere */}
+        <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-96 h-96 bg-indigo-500/20 rounded-full blur-[100px] pointer-events-none"></div>
+
+        <div className="relative z-10 max-w-lg">
+          <h2 className="text-4xl font-extrabold text-white mb-6 leading-tight">
+            Seamless <br/>
+            Commerce.
+          </h2>
+          <p className="text-lg text-slate-300">
+            Sign in to access your wishlist, track orders, or manage your independent store.
+          </p>
+        </div>
+
+        {/* Decorative Image */}
+        <div className="absolute right-0 bottom-10 w-[110%] h-[60%] flex items-end justify-end pointer-events-none">
+          <img src="https://images.unsplash.com/photo-1550009158-9effb66236b2?q=80&w=800&auto=format&fit=crop" alt="Premium lifestyle" className="w-4/5 h-full object-cover rounded-tl-[100px] shadow-2xl opacity-90 mix-blend-luminosity" />
+        </div>
+
+        {/* Decorative Text */}
+        <div className="absolute left-12 bottom-32 font-serif text-4xl italic opacity-30 transform -rotate-12 text-indigo-400">
+          Explore.<br/>Discover.<br/>Create.
+        </div>
+
+      </div>
+
     </div>
   );
 };

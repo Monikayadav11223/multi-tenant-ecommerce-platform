@@ -2,9 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { register, clearError } from '../redux/slices/authSlice';
 import { useNavigate, Link } from 'react-router-dom';
-import { Mail, Lock, User, Store, AlertCircle, Eye, EyeOff, Loader2, ArrowRight, ShoppingBag, Check } from 'lucide-react';
-import { motion, AnimatePresence } from 'framer-motion';
-import clsx from 'clsx';
+import { Mail, Lock, User, Eye, EyeOff, Loader2, ArrowRight, ShieldCheck, ShoppingBag, Store, Globe, TrendingUp } from 'lucide-react';
+import GradientText from '../components/ui/GradientText';
 
 const Register = () => {
   const [formData, setFormData] = useState({
@@ -18,8 +17,7 @@ const Register = () => {
 
   const { name, email, password, confirmPassword, role, storeName } = formData;
   const [showPassword, setShowPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const [focusedInput, setFocusedInput] = useState(null);
+  const [agreed, setAgreed] = useState(false);
   
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -42,6 +40,10 @@ const Register = () => {
       alert("Passwords do not match");
       return;
     }
+    if (!agreed) {
+      alert("You must agree to the Terms of Service.");
+      return;
+    }
     const data = { name, email, password, role };
     if (role === 'Vendor') {
       data.storeName = storeName;
@@ -50,313 +52,240 @@ const Register = () => {
   };
 
   const getPasswordStrength = () => {
-    if (!password) return 0;
-    let strength = 0;
-    if (password.length >= 8) strength++;
-    if (password.match(/[A-Z]/)) strength++;
-    if (password.match(/[0-9]/)) strength++;
-    if (password.match(/[^A-Za-z0-9]/)) strength++;
-    return strength; // 0 to 4
+    if (!password) return { label: '', color: 'bg-slate-200' };
+    if (password.length < 6) return { label: 'Weak', color: 'bg-red-400 w-1/3' };
+    if (password.length < 10) return { label: 'Good', color: 'bg-yellow-400 w-2/3' };
+    return { label: 'Strong', color: 'bg-green-500 w-full' };
   };
-  
-  const strength = getPasswordStrength();
-  
-  const strengthLabel = ['Weak', 'Weak', 'Fair', 'Good', 'Strong'][strength];
-  const strengthColor = [
-    'bg-slate-200',
-    'bg-red-500',
-    'bg-amber-500',
-    'bg-indigo-400',
-    'bg-emerald-500'
-  ][strength];
 
-  const InputField = ({ label, name, type, value, icon: Icon, showToggle, isToggled, onToggle, required, placeholder }) => (
-    <div className="space-y-1.5">
-      <label className="block text-sm font-semibold text-slate-700">{label}</label>
-      <div className="relative group">
-        <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-          <Icon className={clsx("h-5 w-5 transition-colors duration-200", focusedInput === name ? "text-indigo-600" : "text-slate-400")} />
-        </div>
-        <input
-          type={type}
-          name={name}
-          value={value}
-          onChange={onChange}
-          onFocus={() => setFocusedInput(name)}
-          onBlur={() => setFocusedInput(null)}
-          required={required}
-          placeholder={placeholder}
-          className={clsx(
-            "block w-full pl-10 py-3 rounded-xl border sm:text-sm transition-all duration-200 outline-none shadow-sm",
-            showToggle ? "pr-10" : "pr-3",
-            focusedInput === name 
-              ? "border-indigo-600 ring-4 ring-indigo-600/10 bg-white" 
-              : "border-slate-200 bg-slate-50 hover:bg-white"
-          )}
-        />
-        {showToggle && (
-          <button
-            type="button"
-            onClick={onToggle}
-            className="absolute inset-y-0 right-0 pr-3 flex items-center text-slate-400 hover:text-slate-600 focus:outline-none transition-colors"
-          >
-            {isToggled ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
-          </button>
-        )}
-      </div>
-    </div>
-  );
+  const passStrength = getPasswordStrength();
 
   return (
-    <div className="min-h-screen flex bg-white font-sans text-slate-900 selection:bg-indigo-200">
+    <div className="min-h-screen bg-white flex mt-10">
       
-      {/* LEFT SIDE - Registration Surface */}
-      <div className="flex-1 flex flex-col justify-center py-12 px-4 sm:px-6 lg:px-20 xl:px-32 relative overflow-y-auto">
+      {/* LEFT: FORM */}
+      <div className="w-full lg:w-1/2 flex flex-col justify-center px-8 sm:px-16 lg:px-24 py-12 relative z-10">
         
-        {/* Mobile Logo */}
-        <div className="lg:hidden absolute top-8 left-8">
-          <Link to="/" className="flex items-center gap-2">
-            <div className="w-8 h-8 bg-indigo-600 rounded-lg flex items-center justify-center shadow-md">
-              <ShoppingBag className="w-4 h-4 text-white" />
-            </div>
-            <span className="text-xl font-bold text-slate-900">MultiStore</span>
-          </Link>
+        {/* Top Role Switcher (Replaces generic tabs for a premium feel) */}
+        <div className="absolute top-8 right-8 flex bg-slate-100 p-1 rounded-full">
+          <button 
+            onClick={() => setFormData({...formData, role: 'Customer'})}
+            className={`px-4 py-1.5 text-sm font-semibold rounded-full transition-all ${role === 'Customer' ? 'bg-white shadow text-slate-900' : 'text-slate-500 hover:text-slate-700'}`}
+          >
+            Customer
+          </button>
+          <button 
+            onClick={() => setFormData({...formData, role: 'Vendor'})}
+            className={`px-4 py-1.5 text-sm font-semibold rounded-full transition-all ${role === 'Vendor' ? 'bg-white shadow text-slate-900' : 'text-slate-500 hover:text-slate-700'}`}
+          >
+            Vendor
+          </button>
         </div>
 
-        <motion.div 
-          className="mx-auto w-full max-w-md z-10"
-          initial={{ opacity: 0, x: -20 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.5, type: "spring", bounce: 0.3 }}
-        >
-          <div className="text-center lg:text-left mb-8">
-            <h2 className="text-3xl font-extrabold tracking-tight text-slate-900 mb-2">Create Account</h2>
-            <p className="text-slate-500">Join the MultiStore marketplace.</p>
-          </div>
+        <div className="max-w-md w-full mx-auto">
+          {/* Badge */}
+          <span className={`inline-block px-3 py-1 text-xs font-bold tracking-widest rounded-full mb-6 ${role === 'Vendor' ? 'bg-emerald-100 text-emerald-700' : 'bg-indigo-100 text-indigo-700'}`}>
+            {role.toUpperCase()}
+          </span>
 
-          {/* Segmented Control */}
-          <div className="flex p-1 bg-slate-100 rounded-xl mb-8 relative">
-            <button
-              type="button"
-              onClick={() => setFormData({ ...formData, role: 'Customer' })}
-              className={clsx(
-                "flex-1 flex justify-center items-center py-2.5 text-sm font-semibold rounded-lg z-10 transition-colors",
-                role === 'Customer' ? "text-indigo-700" : "text-slate-500 hover:text-slate-700"
-              )}
-            >
-              <User className="w-4 h-4 mr-2" />
-              Customer
-            </button>
-            <button
-              type="button"
-              onClick={() => setFormData({ ...formData, role: 'Vendor' })}
-              className={clsx(
-                "flex-1 flex justify-center items-center py-2.5 text-sm font-semibold rounded-lg z-10 transition-colors",
-                role === 'Vendor' ? "text-indigo-700" : "text-slate-500 hover:text-slate-700"
-              )}
-            >
-              <Store className="w-4 h-4 mr-2" />
-              Vendor
-            </button>
-            
-            {/* Animated Highlight */}
-            <motion.div 
-              className="absolute top-1 bottom-1 w-[calc(50%-4px)] bg-white rounded-lg shadow-sm"
-              initial={false}
-              animate={{ left: role === 'Customer' ? 4 : '50%' }}
-              transition={{ type: "spring", bounce: 0.2, duration: 0.5 }}
-            />
-          </div>
+          <h1 className="text-4xl sm:text-5xl font-extrabold text-slate-900 mb-4 leading-tight">
+            Create Your<br />
+            {role === 'Vendor' ? 'Vendor Account' : 'Account'}
+          </h1>
+          
+          <p className="text-slate-500 mb-10">
+            {role === 'Vendor' 
+              ? 'Start your journey as a seller. Reach millions of customers and grow your brand with MultiStore.'
+              : 'Join millions of shoppers and discover amazing products from independent stores around the world.'}
+          </p>
 
-          <AnimatePresence>
-            {error && (
-              <motion.div 
-                initial={{ opacity: 0, height: 0, mb: 0 }}
-                animate={{ opacity: 1, height: 'auto', mb: 24 }}
-                exit={{ opacity: 0, height: 0, mb: 0 }}
-                className="overflow-hidden"
-              >
-                <div className="bg-red-50 border border-red-100 rounded-xl p-4 flex items-start shadow-sm">
-                  <AlertCircle className="h-5 w-5 text-red-500 mt-0.5 mr-3 flex-shrink-0" />
-                  <p className="text-sm text-red-800">{error}</p>
-                </div>
-              </motion.div>
-            )}
-          </AnimatePresence>
+          {error && (
+            <div className="bg-red-50 text-red-600 p-4 rounded-xl mb-6 text-sm font-medium border border-red-100">
+              {error}
+            </div>
+          )}
 
           <form onSubmit={onSubmit} className="space-y-5">
-            
-            <InputField label="Full Name" name="name" type="text" value={name} icon={User} required placeholder="John Doe" />
-            
-            <InputField label="Email address" name="email" type="email" value={email} icon={Mail} required placeholder="you@example.com" />
-            
             <div>
-              <InputField 
-                label="Password" name="password" type={showPassword ? 'text' : 'password'} 
-                value={password} icon={Lock} showToggle isToggled={showPassword} 
-                onToggle={() => setShowPassword(!showPassword)} required placeholder="••••••••" 
-              />
-              {/* Password Strength */}
-              <AnimatePresence>
-                {password.length > 0 && (
-                  <motion.div 
-                    initial={{ opacity: 0, height: 0 }}
-                    animate={{ opacity: 1, height: 'auto' }}
-                    className="mt-3 overflow-hidden"
-                  >
-                    <div className="flex items-center justify-between mb-1.5">
-                      <span className="text-xs font-medium text-slate-500">Password strength</span>
-                      <span className={clsx("text-xs font-bold", strength > 2 ? "text-indigo-600" : "text-slate-500")}>
-                        {strengthLabel}
-                      </span>
-                    </div>
-                    <div className="flex gap-1.5 h-1.5">
-                      {[1, 2, 3, 4].map(idx => (
-                        <div key={idx} className="flex-1 bg-slate-100 rounded-full overflow-hidden">
-                          <motion.div 
-                            className={clsx("h-full rounded-full", strengthColor)}
-                            initial={{ width: 0 }}
-                            animate={{ width: strength >= idx ? '100%' : '0%' }}
-                            transition={{ duration: 0.3 }}
-                          />
-                        </div>
-                      ))}
-                    </div>
-                  </motion.div>
-                )}
-              </AnimatePresence>
+              <label className="block text-sm font-medium text-slate-700 mb-1.5">Full Name</label>
+              <div className="relative">
+                <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-400">
+                  <User className="h-5 w-5" />
+                </div>
+                <input type="text" name="name" value={name} onChange={onChange} required
+                  className="block w-full pl-11 pr-4 py-3.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 focus:ring-2 focus:ring-indigo-500 focus:bg-white transition-all outline-none"
+                  placeholder="John Doe" />
+              </div>
             </div>
 
-            <InputField 
-              label="Confirm Password" name="confirmPassword" type={showConfirmPassword ? 'text' : 'password'} 
-              value={confirmPassword} icon={Lock} showToggle isToggled={showConfirmPassword} 
-              onToggle={() => setShowConfirmPassword(!showConfirmPassword)} required placeholder="••••••••" 
-            />
+            <div>
+              <label className="block text-sm font-medium text-slate-700 mb-1.5">Email Address</label>
+              <div className="relative">
+                <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-400">
+                  <Mail className="h-5 w-5" />
+                </div>
+                <input type="email" name="email" value={email} onChange={onChange} required
+                  className="block w-full pl-11 pr-4 py-3.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 focus:ring-2 focus:ring-indigo-500 focus:bg-white transition-all outline-none"
+                  placeholder="you@example.com" />
+              </div>
+            </div>
 
-            <AnimatePresence>
-              {role === 'Vendor' && (
-                <motion.div 
-                  initial={{ opacity: 0, height: 0, mt: 0 }}
-                  animate={{ opacity: 1, height: 'auto', mt: 20 }}
-                  exit={{ opacity: 0, height: 0, mt: 0 }}
-                  className="overflow-hidden"
-                >
-                  <div className="p-5 bg-indigo-50/50 border border-indigo-100 rounded-xl space-y-4">
-                    <h3 className="text-sm font-bold text-indigo-900 uppercase tracking-wider flex items-center">
-                      <Store className="w-4 h-4 mr-2" />
-                      Store Identity
-                    </h3>
-                    <InputField label="Store Name" name="storeName" type="text" value={storeName} icon={Store} required placeholder="e.g. Acme Tech" />
+            {role === 'Vendor' && (
+              <div>
+                <label className="block text-sm font-medium text-slate-700 mb-1.5">Store Name</label>
+                <div className="relative">
+                  <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-400">
+                    <Store className="h-5 w-5" />
                   </div>
-                </motion.div>
-              )}
-            </AnimatePresence>
-
-            <div className="flex items-start pt-2">
-              <div className="flex items-center h-5">
-                <input id="terms" name="terms" type="checkbox" required className="h-4 w-4 rounded border-slate-300 text-indigo-600 focus:ring-indigo-600 transition-colors" />
+                  <input type="text" name="storeName" value={storeName} onChange={onChange} required
+                    className="block w-full pl-11 pr-4 py-3.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 focus:ring-2 focus:ring-indigo-500 focus:bg-white transition-all outline-none"
+                    placeholder="My Awesome Store" />
+                </div>
               </div>
-              <div className="ml-3 text-sm">
-                <label htmlFor="terms" className="text-slate-600">
-                  I agree to the <a href="#" className="font-semibold text-indigo-600 hover:text-indigo-500">Terms of Service</a> and <a href="#" className="font-semibold text-indigo-600 hover:text-indigo-500">Privacy Policy</a>.
-                </label>
+            )}
+
+            <div>
+              <label className="block text-sm font-medium text-slate-700 mb-1.5">Password</label>
+              <div className="relative">
+                <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-400">
+                  <Lock className="h-5 w-5" />
+                </div>
+                <input type={showPassword ? 'text' : 'password'} name="password" value={password} onChange={onChange} required
+                  className="block w-full pl-11 pr-12 py-3.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 focus:ring-2 focus:ring-indigo-500 focus:bg-white transition-all outline-none"
+                  placeholder="••••••••" />
+                <div className="absolute inset-y-0 right-0 pr-4 flex items-center cursor-pointer text-slate-400 hover:text-slate-600" onClick={() => setShowPassword(!showPassword)}>
+                  {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
+                </div>
+              </div>
+              {password && (
+                <div className="mt-2 flex items-center justify-between">
+                  <div className="h-1.5 flex-grow bg-slate-100 rounded-full overflow-hidden mr-3">
+                    <div className={`h-full rounded-full transition-all ${passStrength.color}`}></div>
+                  </div>
+                  <span className="text-xs font-semibold text-slate-500">{passStrength.label}</span>
+                </div>
+              )}
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-slate-700 mb-1.5">Confirm Password</label>
+              <div className="relative">
+                <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-400">
+                  <Lock className="h-5 w-5" />
+                </div>
+                <input type={showPassword ? 'text' : 'password'} name="confirmPassword" value={confirmPassword} onChange={onChange} required
+                  className="block w-full pl-11 pr-12 py-3.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 focus:ring-2 focus:ring-indigo-500 focus:bg-white transition-all outline-none"
+                  placeholder="••••••••" />
               </div>
             </div>
 
-            <button
-              type="submit"
-              disabled={loading}
-              className="group relative w-full flex justify-center py-3.5 px-4 border border-transparent text-sm font-bold rounded-xl text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-600 overflow-hidden transition-all duration-200 shadow-md hover:shadow-lg disabled:opacity-70 disabled:cursor-not-allowed mt-6"
-            >
-              <div className="absolute inset-0 -translate-x-full group-hover:animate-[shimmer_1.5s_infinite] bg-gradient-to-r from-transparent via-white/20 to-transparent z-0"></div>
-              <div className="relative z-10 flex items-center">
-                {loading ? (
-                  <>
-                    <Loader2 className="animate-spin -ml-1 mr-2 h-5 w-5 text-white" />
-                    Creating account...
-                  </>
-                ) : (
-                  <>
-                    Create Account
-                    <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
-                  </>
-                )}
-              </div>
+            <div className="flex items-start mt-6">
+              <input type="checkbox" id="terms" checked={agreed} onChange={() => setAgreed(!agreed)} className="mt-1 w-4 h-4 text-indigo-600 border-slate-300 rounded focus:ring-indigo-500" />
+              <label htmlFor="terms" className="ml-2 text-sm text-slate-600">
+                I agree to the <a href="#" className="text-indigo-600 hover:underline">Terms of Service</a> and <a href="#" className="text-indigo-600 hover:underline">Privacy Policy</a>.
+              </label>
+            </div>
+
+            <button type="submit" disabled={loading} className="w-full mt-6 py-4 px-4 bg-slate-900 hover:bg-indigo-600 text-white text-base font-bold rounded-xl shadow-md transition-colors flex items-center justify-center group disabled:bg-slate-400">
+              {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : (
+                <>
+                  {role === 'Vendor' ? 'Create Vendor Account' : 'Create Account'}
+                  <ArrowRight className="w-5 h-5 ml-2 transform group-hover:translate-x-1 transition-transform" />
+                </>
+              )}
             </button>
           </form>
 
-          <p className="mt-8 text-center text-sm text-slate-500 pb-10">
-            Already have an account?{' '}
-            <Link to="/login" className="font-bold text-indigo-600 hover:text-indigo-500 transition-colors">
-              Sign In
-            </Link>
+          <p className="mt-8 text-center text-sm text-slate-600">
+            Already have an account? <Link to="/login" className="font-bold text-indigo-600 hover:text-indigo-700 transition-colors">Sign In</Link>
           </p>
-        </motion.div>
-      </div>
 
-      {/* RIGHT SIDE - Cinematic Visual */}
-      <div className="hidden lg:flex lg:w-1/2 relative flex-col justify-between overflow-hidden bg-slate-950">
-        
-        {/* Animated Gradient Background */}
-        <div className="absolute inset-0 z-0">
-          <div className="absolute bottom-0 -left-1/4 w-3/4 h-3/4 bg-indigo-600/30 rounded-full mix-blend-screen filter blur-[120px] animate-float-delayed"></div>
-          <div className="absolute top-0 -right-1/4 w-3/4 h-3/4 bg-violet-600/30 rounded-full mix-blend-screen filter blur-[120px] animate-float"></div>
-        </div>
-
-        {/* Content */}
-        <div className="relative z-10 flex items-center justify-end p-12 w-full">
-          <Link to="/" className="flex items-center gap-3 group">
-            <span className="text-2xl font-bold text-white tracking-tight">MultiStore</span>
-            <div className="w-10 h-10 bg-white rounded-xl flex items-center justify-center shadow-lg shadow-white/10 group-hover:scale-105 transition-transform">
-              <ShoppingBag className="w-6 h-6 text-indigo-600" />
-            </div>
-          </Link>
-        </div>
-
-        <div className="relative z-10 px-12 lg:px-20 pb-20">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.2 }}
-          >
-            <h1 className="text-5xl lg:text-6xl font-extrabold text-white tracking-tight mb-6 leading-[1.1]">
-              Start your journey.<br />
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-violet-400 to-indigo-400">Join the future.</span>
-            </h1>
-            <p className="text-slate-300 text-lg leading-relaxed max-w-md">
-              Create your free account today and discover independent stores, or become a vendor and build your own empire.
-            </p>
-          </motion.div>
-
-          <div className="mt-12 flex gap-4">
-             <div className="glass-dark rounded-xl p-4 flex items-center gap-4 w-64 shadow-2xl animate-float">
-                <div className="w-12 h-12 rounded-full bg-emerald-500/20 flex items-center justify-center text-emerald-400">
-                   <Check className="w-6 h-6" />
-                </div>
-                <div>
-                   <h4 className="text-white font-bold text-sm">Customer Access</h4>
-                   <p className="text-slate-400 text-xs mt-1">Shop thousands of products</p>
-                </div>
-             </div>
-             
-             <div className="glass-dark rounded-xl p-4 flex items-center gap-4 w-64 shadow-2xl animate-float-delayed -ml-10 mt-12">
-                <div className="w-12 h-12 rounded-full bg-indigo-500/20 flex items-center justify-center text-indigo-400">
-                   <Store className="w-6 h-6" />
-                </div>
-                <div>
-                   <h4 className="text-white font-bold text-sm">Vendor Toolkit</h4>
-                   <p className="text-slate-400 text-xs mt-1">Build and scale your brand</p>
-                </div>
-             </div>
+          {/* Bottom Benefits */}
+          <div className="mt-12 flex items-center justify-between border-t border-slate-100 pt-8">
+            {role === 'Customer' ? (
+              <>
+                <div className="flex flex-col items-center text-center"><ShoppingBag className="w-5 h-5 text-slate-400 mb-1" /><span className="text-xs font-medium text-slate-500">Unique Products</span></div>
+                <div className="flex flex-col items-center text-center"><ShieldCheck className="w-5 h-5 text-slate-400 mb-1" /><span className="text-xs font-medium text-slate-500">Secure Shopping</span></div>
+                <div className="flex flex-col items-center text-center"><Store className="w-5 h-5 text-slate-400 mb-1" /><span className="text-xs font-medium text-slate-500">Support Creators</span></div>
+              </>
+            ) : (
+              <>
+                <div className="flex flex-col items-center text-center"><Store className="w-5 h-5 text-slate-400 mb-1" /><span className="text-xs font-medium text-slate-500">Your Own Store</span></div>
+                <div className="flex flex-col items-center text-center"><Globe className="w-5 h-5 text-slate-400 mb-1" /><span className="text-xs font-medium text-slate-500">Reach More Customers</span></div>
+                <div className="flex flex-col items-center text-center"><TrendingUp className="w-5 h-5 text-slate-400 mb-1" /><span className="text-xs font-medium text-slate-500">Powerful Tools</span></div>
+              </>
+            )}
           </div>
         </div>
       </div>
-      
-      <style dangerouslySetInnerHTML={{__html: `
-        @keyframes shimmer {
-          100% { transform: translateX(100%); }
-        }
-      `}} />
+
+      {/* RIGHT: VISUAL PANEL */}
+      <div className={`hidden lg:flex w-1/2 flex-col justify-between p-12 relative overflow-hidden transition-colors duration-1000 ${role === 'Customer' ? 'bg-lavender-100' : 'bg-mint-100'}`}>
+        
+        <div className="relative z-10 max-w-lg">
+          <h2 className="text-5xl font-extrabold text-slate-900 mb-6 leading-tight">
+            {role === 'Customer' ? (
+              <>Discover<br /><GradientText>More.</GradientText></>
+            ) : (
+              <>Turn Your<br />Passion Into<br /><span className="text-emerald-600">a Business.</span></>
+            )}
+          </h2>
+          <p className="text-lg text-slate-600">
+            {role === 'Customer' 
+              ? 'Immerse yourself in a marketplace designed for those who appreciate quality and independence.' 
+              : 'Join thousands of successful sellers making a living doing what they love.'}
+          </p>
+        </div>
+
+        {/* Decorative Image Scene */}
+        <div className="absolute right-0 bottom-10 w-[120%] h-[60%] flex items-end justify-end pointer-events-none">
+          {role === 'Customer' ? (
+            <img src="https://images.unsplash.com/photo-1483985988355-763728e1935b?q=80&w=800&auto=format&fit=crop" alt="Shopping lifestyle" className="w-4/5 h-full object-cover rounded-tl-[100px] shadow-2xl" />
+          ) : (
+            <img src="https://images.unsplash.com/photo-1556761175-5973dc0f32d7?q=80&w=800&auto=format&fit=crop" alt="Vendor workspace" className="w-4/5 h-full object-cover rounded-tl-[100px] shadow-2xl" />
+          )}
+        </div>
+
+        {/* Decorative Text */}
+        <div className={`absolute left-12 bottom-48 font-serif text-4xl italic opacity-40 transform -rotate-12 ${role === 'Customer' ? 'text-indigo-600' : 'text-emerald-600'}`}>
+          {role === 'Customer' ? (
+            <>Good Products<br/>Brighter People</>
+          ) : (
+            <>Independent<br/>Brands<br/>Bigger<br/>Tomorrow</>
+          )}
+        </div>
+
+        {/* Floating Stats Card */}
+        <div className="relative z-10 bg-white/80 backdrop-blur-xl p-6 rounded-3xl shadow-xl max-w-sm mb-8 border border-white/60 flex items-center justify-between">
+          {role === 'Customer' ? (
+            <>
+              <div className="text-center">
+                <div className="text-xl font-bold text-slate-900">1M+</div>
+                <div className="text-xs text-slate-500 font-medium">Happy Shoppers</div>
+              </div>
+              <div className="w-px h-10 bg-slate-200"></div>
+              <div className="text-center">
+                <div className="text-xl font-bold text-slate-900">50K+</div>
+                <div className="text-xs text-slate-500 font-medium">Unique Products</div>
+              </div>
+            </>
+          ) : (
+            <>
+              <div className="text-center">
+                <div className="text-xl font-bold text-slate-900">10K+</div>
+                <div className="text-xs text-slate-500 font-medium">Active Stores</div>
+              </div>
+              <div className="w-px h-10 bg-slate-200"></div>
+              <div className="text-center">
+                <div className="text-xl font-bold text-slate-900">1M+</div>
+                <div className="text-xs text-slate-500 font-medium">Customers</div>
+              </div>
+            </>
+          )}
+        </div>
+
+      </div>
+
     </div>
   );
 };

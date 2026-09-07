@@ -3,9 +3,9 @@ import { useSelector, useDispatch } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { fetchWishlist, toggleWishlistItem } from '../redux/slices/wishlistSlice';
 import { addToCart } from '../redux/slices/cartSlice';
-import Button from '../components/ui/Button';
+import ProductCard from '../components/ui/ProductCard';
 import EmptyState from '../components/ui/EmptyState';
-import { Heart, ShoppingCart, Trash2 } from 'lucide-react';
+import { Heart, Loader2 } from 'lucide-react';
 
 const Wishlist = () => {
   const dispatch = useDispatch();
@@ -14,10 +14,6 @@ const Wishlist = () => {
   useEffect(() => {
     dispatch(fetchWishlist());
   }, [dispatch]);
-
-  const handleRemove = (productId) => {
-    dispatch(toggleWishlistItem(productId));
-  };
 
   const handleAddToCart = (product) => {
     dispatch(addToCart({
@@ -31,80 +27,45 @@ const Wishlist = () => {
     }));
   };
 
-  if (loading) {
-    return <div className="min-h-screen flex items-center justify-center">Loading...</div>;
-  }
-
-  if (!items || items.length === 0) {
-    return (
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-        <EmptyState 
-          icon={Heart}
-          title="Your wishlist is empty"
-          description="Save items you love to your wishlist. Review them anytime and easily move them to your cart."
-          actionText="Explore Products"
-          actionLink="/"
-        />
-      </div>
-    );
-  }
-
   return (
-    <div className="bg-gray-50 min-h-[calc(100vh-64px)] py-12">
+    <div className="bg-slate-50 min-h-screen py-16">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <h1 className="text-3xl font-extrabold text-gray-900 tracking-tight mb-8">My Wishlist</h1>
-
-        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-          <ul className="divide-y divide-gray-200">
-            {items.map((item) => (
-              <li key={item._id} className="flex py-6 px-6 sm:px-8">
-                <div className="flex-shrink-0">
-                  {item.images && item.images.length > 0 ? (
-                    <img
-                      src={item.images[0]}
-                      alt={item.name}
-                      className="w-24 h-24 rounded-xl object-cover border border-gray-100 sm:w-32 sm:h-32"
-                    />
-                  ) : (
-                    <div className="w-24 h-24 rounded-xl bg-gray-100 border border-gray-200 sm:w-32 sm:h-32 flex items-center justify-center">
-                      <span className="text-gray-400 text-xs">No image</span>
-                    </div>
-                  )}
-                </div>
-
-                <div className="ml-4 flex-1 flex flex-col sm:ml-6">
-                  <div>
-                    <div className="flex justify-between">
-                      <h4 className="text-sm">
-                        <Link to={`/product/${item._id}`} className="font-bold text-gray-900 hover:text-indigo-600 text-base">
-                          {item.name}
-                        </Link>
-                      </h4>
-                      <p className="ml-4 text-lg font-bold text-gray-900">₹{item.price?.toLocaleString('en-IN')}</p>
-                    </div>
-                    <p className="mt-1 text-sm text-gray-500">{item.storeId?.name || 'Vendor Store'}</p>
-                  </div>
-
-                  <div className="mt-4 flex-1 flex items-end justify-between">
-                    <button
-                      type="button"
-                      onClick={() => handleRemove(item._id)}
-                      className="text-sm font-medium text-red-600 hover:text-red-500 flex items-center bg-red-50 px-3 py-1.5 rounded-lg"
-                    >
-                      <Trash2 className="w-4 h-4 mr-1.5" />
-                      <span>Remove</span>
-                    </button>
-
-                    <Button onClick={() => handleAddToCart(item)} size="sm" className="flex items-center">
-                      <ShoppingCart className="w-4 h-4 mr-2" />
-                      Add to Cart
-                    </Button>
-                  </div>
-                </div>
-              </li>
-            ))}
-          </ul>
+        <div className="flex items-center gap-4 mb-10">
+          <div className="w-12 h-12 rounded-2xl bg-indigo-100 text-indigo-600 flex items-center justify-center">
+            <Heart className="w-6 h-6 fill-current" />
+          </div>
+          <div>
+            <h1 className="text-3xl font-extrabold text-slate-900 tracking-tight">Your Wishlist</h1>
+            <p className="text-slate-500">Products you've saved for later</p>
+          </div>
         </div>
+
+        {loading ? (
+          <div className="flex flex-col items-center justify-center py-24">
+            <Loader2 className="w-10 h-10 animate-spin text-indigo-600 mb-4" />
+            <p className="text-slate-500 font-medium">Loading your wishlist...</p>
+          </div>
+        ) : items.length === 0 ? (
+          <div className="bg-white rounded-3xl shadow-sm border border-slate-100 p-12">
+            <EmptyState 
+              icon={Heart}
+              title="Your wishlist is empty"
+              description="Save items you love so you don't lose track of them."
+              actionText="Explore Products"
+              actionLink="/products"
+            />
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            {items.map((product) => (
+              <ProductCard 
+                key={product._id} 
+                product={product} 
+                onAddToCart={handleAddToCart}
+              />
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );

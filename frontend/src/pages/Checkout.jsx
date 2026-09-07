@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import Input from '../components/ui/Input';
+import { Loader2, ArrowRight, ShieldCheck, MapPin, CreditCard, Lock } from 'lucide-react';
 import Button from '../components/ui/Button';
 
 const Checkout = () => {
@@ -40,111 +40,191 @@ const Checkout = () => {
         shippingAddress: formData
       }, config);
       
-      if (response.data && response.data.url) {
+      if (response.data.url) {
         window.location.href = response.data.url;
-      } else {
-        alert("Payment session creation failed.");
-        setLoading(false);
       }
     } catch (error) {
-      console.error("Checkout error:", error);
-      alert("Error initiating checkout: " + (error.response?.data?.message || error.message));
+      console.error('Checkout error:', error);
+      alert(error.response?.data?.message || 'Payment initiation failed. Please try again.');
       setLoading(false);
     }
   };
 
   return (
-    <div className="bg-gray-50 min-h-[calc(100vh-64px)] py-12">
+    <div className="bg-slate-50 min-h-screen py-16">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <h1 className="text-3xl font-extrabold text-gray-900 tracking-tight mb-8">Checkout</h1>
+        
+        {/* Header */}
+        <div className="text-center mb-12">
+          <h1 className="text-4xl font-extrabold text-slate-900 tracking-tight">Secure Checkout</h1>
+          <div className="flex items-center justify-center gap-2 mt-4 text-slate-500 font-medium">
+            <ShieldCheck className="w-5 h-5 text-emerald-500" />
+            Your connection is encrypted and secure
+          </div>
+        </div>
 
-        <div className="lg:grid lg:grid-cols-12 lg:gap-x-12 lg:items-start">
-          <div className="lg:col-span-7">
-            <form onSubmit={handleCheckout}>
-              <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-8 mb-6">
-                <h2 className="text-lg font-bold text-gray-900 mb-6">Shipping Information</h2>
-                <div className="grid grid-cols-1 gap-y-6 sm:grid-cols-2 sm:gap-x-4">
-                  <div className="sm:col-span-2">
-                    <Input label="Full Name" name="fullName" value={formData.fullName} onChange={handleInputChange} required placeholder="Jane Doe" />
+        <div className="flex flex-col lg:flex-row gap-12">
+          
+          {/* LEFT: Forms */}
+          <div className="flex-1">
+            <form onSubmit={handleCheckout} id="checkout-form" className="space-y-8">
+              
+              {/* Shipping Information */}
+              <div className="bg-white p-8 rounded-3xl shadow-sm border border-slate-100 relative overflow-hidden">
+                <div className="absolute top-0 right-0 p-8 opacity-5"><MapPin className="w-32 h-32" /></div>
+                
+                <h2 className="text-xl font-bold text-slate-900 mb-6 flex items-center relative z-10">
+                  <span className="w-8 h-8 rounded-full bg-indigo-100 text-indigo-600 flex items-center justify-center mr-3 text-sm">1</span>
+                  Shipping Information
+                </h2>
+                
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 relative z-10">
+                  <div className="md:col-span-2">
+                    <label className="block text-sm font-medium text-slate-700 mb-1.5">Full Name</label>
+                    <input type="text" name="fullName" value={formData.fullName} onChange={handleInputChange} required
+                      className="block w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 focus:ring-2 focus:ring-indigo-500 focus:bg-white transition-all outline-none" />
                   </div>
-                  <div className="sm:col-span-2">
-                    <Input label="Address" name="address" value={formData.address} onChange={handleInputChange} required placeholder="123 Main St" />
+                  
+                  <div className="md:col-span-2">
+                    <label className="block text-sm font-medium text-slate-700 mb-1.5">Street Address</label>
+                    <input type="text" name="address" value={formData.address} onChange={handleInputChange} required
+                      className="block w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 focus:ring-2 focus:ring-indigo-500 focus:bg-white transition-all outline-none" />
                   </div>
+                  
                   <div>
-                    <Input label="City" name="city" value={formData.city} onChange={handleInputChange} required placeholder="New York" />
+                    <label className="block text-sm font-medium text-slate-700 mb-1.5">City</label>
+                    <input type="text" name="city" value={formData.city} onChange={handleInputChange} required
+                      className="block w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 focus:ring-2 focus:ring-indigo-500 focus:bg-white transition-all outline-none" />
                   </div>
+                  
                   <div>
-                    <Input label="State / Province" name="state" value={formData.state} onChange={handleInputChange} required placeholder="NY" />
+                    <label className="block text-sm font-medium text-slate-700 mb-1.5">State / Province</label>
+                    <input type="text" name="state" value={formData.state} onChange={handleInputChange} required
+                      className="block w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 focus:ring-2 focus:ring-indigo-500 focus:bg-white transition-all outline-none" />
                   </div>
+                  
                   <div>
-                    <Input label="Postal code" name="postalCode" value={formData.postalCode} onChange={handleInputChange} required placeholder="10001" />
+                    <label className="block text-sm font-medium text-slate-700 mb-1.5">Postal Code</label>
+                    <input type="text" name="postalCode" value={formData.postalCode} onChange={handleInputChange} required
+                      className="block w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 focus:ring-2 focus:ring-indigo-500 focus:bg-white transition-all outline-none" />
                   </div>
+                  
                   <div>
-                    <Input label="Country" name="country" value={formData.country} onChange={handleInputChange} required placeholder="United States" />
+                    <label className="block text-sm font-medium text-slate-700 mb-1.5">Country</label>
+                    <input type="text" name="country" value={formData.country} onChange={handleInputChange} required
+                      className="block w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 focus:ring-2 focus:ring-indigo-500 focus:bg-white transition-all outline-none" />
                   </div>
-                  <div className="sm:col-span-2">
-                    <Input label="Phone" name="phone" value={formData.phone} onChange={handleInputChange} type="tel" required placeholder="(555) 555-5555" />
+                  
+                  <div className="md:col-span-2">
+                    <label className="block text-sm font-medium text-slate-700 mb-1.5">Phone Number</label>
+                    <input type="tel" name="phone" value={formData.phone} onChange={handleInputChange} required
+                      className="block w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 focus:ring-2 focus:ring-indigo-500 focus:bg-white transition-all outline-none" />
                   </div>
                 </div>
               </div>
 
-              <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-8">
-                <h2 className="text-lg font-bold text-gray-900 mb-6">Payment Method</h2>
-                <div className="space-y-6">
-                  <div className="bg-indigo-50 border border-indigo-200 rounded-lg p-4 text-sm text-indigo-700">
-                    You will be redirected to Stripe's secure checkout page to complete your payment.
+              {/* Payment Method Preview */}
+              <div className="bg-white p-8 rounded-3xl shadow-sm border border-slate-100 relative overflow-hidden">
+                <div className="absolute top-0 right-0 p-8 opacity-5"><CreditCard className="w-32 h-32" /></div>
+                
+                <h2 className="text-xl font-bold text-slate-900 mb-6 flex items-center relative z-10">
+                  <span className="w-8 h-8 rounded-full bg-indigo-100 text-indigo-600 flex items-center justify-center mr-3 text-sm">2</span>
+                  Payment Method
+                </h2>
+
+                <div className="p-6 border border-indigo-200 rounded-2xl bg-indigo-50/50 flex items-start relative z-10">
+                  <div className="mt-1">
+                    <div className="w-6 h-6 rounded-full bg-indigo-600 flex items-center justify-center">
+                      <div className="w-2.5 h-2.5 rounded-full bg-white"></div>
+                    </div>
+                  </div>
+                  <div className="ml-4">
+                    <h3 className="text-base font-bold text-slate-900">Credit / Debit Card (Stripe)</h3>
+                    <p className="text-sm text-slate-600 mt-1">
+                      You will be redirected to Stripe's secure checkout page to complete your payment safely.
+                    </p>
+                    <div className="flex items-center gap-2 mt-3">
+                      <div className="w-12 h-8 bg-white rounded border border-slate-200 flex items-center justify-center font-bold text-[10px] text-blue-800">VISA</div>
+                      <div className="w-12 h-8 bg-white rounded border border-slate-200 flex items-center justify-center font-bold text-[10px] text-red-600">MASTER</div>
+                      <div className="w-12 h-8 bg-white rounded border border-slate-200 flex items-center justify-center font-bold text-[10px] text-blue-500">AMEX</div>
+                    </div>
                   </div>
                 </div>
               </div>
-
-              <div className="mt-8 flex justify-end">
-                <Button type="submit" size="lg" className="w-full sm:w-auto" disabled={loading}>
-                  {loading ? 'Processing...' : `Pay securely with Stripe - ₹${(totalAmount * 1.18).toLocaleString('en-IN')}`}
-                </Button>
-              </div>
+              
             </form>
           </div>
 
-          <div className="mt-16 lg:mt-0 lg:col-span-5">
-            <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-8 sticky top-24">
-              <h2 className="text-lg font-bold text-gray-900 mb-6">Order summary</h2>
-              <ul className="divide-y divide-gray-200 mb-6">
-                {items.map((item) => (
-                  <li key={item.productId} className="py-4 flex">
-                    <div className="flex-shrink-0 w-16 h-16 bg-gray-100 rounded-lg border border-gray-200 overflow-hidden">
-                      {item.image && <img src={item.image} alt="" className="w-full h-full object-cover" />}
-                    </div>
-                    <div className="ml-4 flex-1 flex flex-col justify-center">
-                      <div className="flex justify-between items-start">
-                        <div className="text-sm font-medium text-gray-900">{item.name}</div>
-                        <div className="text-sm font-medium text-gray-900 ml-4">₹{(item.price * item.quantity).toLocaleString('en-IN')}</div>
-                      </div>
-                      <p className="mt-1 text-sm text-gray-500">Qty {item.quantity}</p>
-                    </div>
-                  </li>
-                ))}
-              </ul>
+          {/* RIGHT: Order Summary */}
+          <div className="lg:w-96 flex-shrink-0">
+            <div className="bg-navy-900 rounded-3xl shadow-xl overflow-hidden text-white relative sticky top-32">
+              <div className="absolute top-0 right-0 w-64 h-64 bg-indigo-500/20 rounded-full blur-[80px] pointer-events-none"></div>
               
-              <dl className="space-y-4 border-t border-gray-200 pt-6">
-                <div className="flex items-center justify-between">
-                  <dt className="text-sm text-gray-600">Subtotal</dt>
-                  <dd className="text-sm font-medium text-gray-900">₹{totalAmount.toLocaleString('en-IN')}</dd>
+              <div className="p-8 relative z-10">
+                <h2 className="text-xl font-extrabold mb-6">Order Summary</h2>
+                
+                <div className="mb-6 max-h-64 overflow-y-auto pr-2 custom-scrollbar">
+                  <ul className="space-y-4">
+                    {items.map((item) => (
+                      <li key={item.productId} className="flex gap-4">
+                        <div className="w-16 h-16 bg-white rounded-xl overflow-hidden flex-shrink-0">
+                          {item.image ? (
+                            <img src={item.image} alt={item.name} className="w-full h-full object-cover" />
+                          ) : (
+                            <div className="w-full h-full bg-slate-100 flex items-center justify-center"><ShoppingCart className="w-4 h-4 text-slate-400" /></div>
+                          )}
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <h4 className="text-sm font-bold truncate text-slate-100">{item.name}</h4>
+                          <p className="text-xs text-indigo-300 mt-0.5">Qty: {item.quantity}</p>
+                          <p className="text-sm font-bold text-white mt-1">₹{(item.price * item.quantity).toLocaleString('en-IN')}</p>
+                        </div>
+                      </li>
+                    ))}
+                  </ul>
                 </div>
-                <div className="flex items-center justify-between">
-                  <dt className="text-sm text-gray-600">Shipping</dt>
-                  <dd className="text-sm font-medium text-gray-900">Free</dd>
+                
+                <div className="flow-root mb-6 border-t border-white/10 pt-6">
+                  <dl className="space-y-4 text-sm font-medium text-slate-300">
+                    <div className="flex items-center justify-between">
+                      <dt>Subtotal</dt>
+                      <dd className="font-bold text-white">₹{totalAmount.toLocaleString('en-IN')}</dd>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <dt>Shipping</dt>
+                      <dd className="text-indigo-300">Free</dd>
+                    </div>
+                  </dl>
                 </div>
-                <div className="flex items-center justify-between">
-                  <dt className="text-sm text-gray-600">Taxes</dt>
-                  <dd className="text-sm font-medium text-gray-900">₹{(totalAmount * 0.18).toLocaleString('en-IN')}</dd>
+                
+                <div className="border-t border-white/10 pt-6 mb-8 flex items-center justify-between">
+                  <div className="text-base font-bold text-slate-300">Total to Pay</div>
+                  <div className="text-3xl font-black text-white">₹{totalAmount.toLocaleString('en-IN')}</div>
                 </div>
-                <div className="flex items-center justify-between border-t border-gray-200 pt-4">
-                  <dt className="text-base font-bold text-gray-900">Total</dt>
-                  <dd className="text-xl font-black text-gray-900">₹{(totalAmount * 1.18).toLocaleString('en-IN')}</dd>
+
+                <div className="space-y-4">
+                  <button 
+                    type="submit" 
+                    form="checkout-form"
+                    disabled={loading}
+                    className="w-full flex items-center justify-center py-4 px-4 bg-indigo-600 hover:bg-indigo-500 text-white text-base font-bold rounded-xl shadow-lg shadow-indigo-500/30 transition-all hover:-translate-y-0.5 disabled:bg-slate-700 disabled:shadow-none group"
+                  >
+                    {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : (
+                      <>
+                        <Lock className="w-4 h-4 mr-2" /> Pay Securely
+                        <ArrowRight className="w-5 h-5 ml-2 transform group-hover:translate-x-1 transition-transform" />
+                      </>
+                    )}
+                  </button>
+                  
+                  <div className="text-center">
+                    <p className="text-xs text-slate-400">Payments processed securely by Stripe</p>
+                  </div>
                 </div>
-              </dl>
+              </div>
             </div>
           </div>
+
         </div>
       </div>
     </div>
