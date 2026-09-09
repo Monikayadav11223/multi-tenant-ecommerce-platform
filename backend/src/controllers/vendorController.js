@@ -147,6 +147,13 @@ const createVendorProduct = async (req, res) => {
 
     let productData = typeof req.body.data === 'string' ? JSON.parse(req.body.data) : req.body;
     
+    // Auto-generate slug from name if not provided
+    if (!productData.slug && productData.name) {
+      const baseSlug = productData.name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+      // Ensure uniqueness by appending timestamp
+      productData.slug = `${baseSlug}-${Date.now()}`;
+    }
+    
     // Check if images are uploaded
     const images = [];
     if (req.files && req.files.images) {

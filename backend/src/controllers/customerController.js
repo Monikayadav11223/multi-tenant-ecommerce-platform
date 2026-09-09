@@ -46,7 +46,7 @@ const removeFromWishlist = async (req, res) => {
     const user = await User.findById(req.user._id);
     
     user.wishlist = user.wishlist.filter(
-      (id) => id.toString() !== productId.toString()
+      (id) => id != null && id.toString() !== productId.toString()
     );
     await user.save();
     
