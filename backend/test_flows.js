@@ -119,12 +119,13 @@ const runTests = async () => {
 
     // 6. Customer Add to Wishlist
     try {
-      const data = await fetchJson(`${API_URL}/customer/wishlist/toggle`, {
+      const data = await fetchJson(`${API_URL}/customer/wishlist`, {
         method: 'POST',
         headers: { Authorization: `Bearer ${customerToken}` },
         body: JSON.stringify({ productId })
       });
-      if (data.includes(productId)) logResult('Wishlist', 'PASS');
+      const inWishlist = Array.isArray(data) && data.some(p => (p._id || p).toString() === productId.toString());
+      if (inWishlist) logResult('Wishlist', 'PASS');
       else logResult('Wishlist', 'FAIL', 'Product not in wishlist');
     } catch (e) {
       logResult('Wishlist', 'FAIL', e.data?.message || e.message);
@@ -179,7 +180,7 @@ const runTests = async () => {
 
     // 9. RBAC: Vendor tries to access admin stats
     try {
-      await fetchJson(`${API_URL}/admin/stats`, {
+      await fetchJson(`${API_URL}/admin/dashboard`, {
         headers: { Authorization: `Bearer ${vendorToken}` }
       });
       logResult('RBAC', 'FAIL', 'Vendor accessed admin stats');

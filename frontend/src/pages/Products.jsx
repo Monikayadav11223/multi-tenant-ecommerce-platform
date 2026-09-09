@@ -18,7 +18,15 @@ const Products = () => {
   }, [dispatch]);
 
   const handleAddToCart = (product) => {
-    dispatch(addToCart(product));
+    dispatch(addToCart({
+      productId: product._id,
+      storeId: product.storeId?._id || product.storeId,
+      price: product.price,
+      name: product.name,
+      image: product.images?.[0] || '',
+      inventoryCount: product.inventoryCount,
+      quantity: 1
+    }));
   };
 
   const categories = ['All', ...new Set(products.map(p => p.category).filter(Boolean))];

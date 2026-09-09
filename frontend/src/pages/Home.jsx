@@ -12,7 +12,7 @@ import WhyChooseUsSection from '../components/home/WhyChooseUsSection';
 
 const Home = () => {
   const dispatch = useDispatch();
-  const { products, loading } = useSelector((state) => state.products);
+  const { items: products, loading } = useSelector((state) => state.products);
 
   useEffect(() => {
     dispatch(fetchProducts());
@@ -21,7 +21,7 @@ const Home = () => {
   const handleAddToCart = (product) => {
     dispatch(addToCart({
       productId: product._id,
-      storeId: product.storeId,
+      storeId: product.storeId?._id || product.storeId,
       price: product.price,
       name: product.name,
       image: product.images?.[0] || '',
