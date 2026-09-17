@@ -1,0 +1,412 @@
+Redesign the Meridian homepage product sections to use REALISTIC E-COMMERCE PRODUCT IMAGES and Indian Rupee pricing.
+
+IMPORTANT:
+I want the product visuals to look like a REAL Indian fashion/e-commerce marketplace, similar in visual quality and density to the reference screenshot I provided.
+
+Do NOT use cartoon illustrations, generic gradients, abstract graphics, or obviously AI-looking placeholder images.
+
+==================================================
+PRODUCT IMAGES
+==================================================
+
+Use realistic, high-quality e-commerce product photography.
+
+Product images should include categories such as:
+
+Women:
+- Sarees
+- Kurtis
+- Dresses
+- Tops
+- Ethnic Wear
+- Western Wear
+
+Men:
+- Shirts
+- T-shirts
+- Jeans
+- Kurtas
+- Jackets
+- Shoes
+
+Accessories:
+- Handbags
+- Watches
+- Jewellery
+- Sunglasses
+
+Beauty:
+- Perfume
+- Skincare
+- Makeup
+
+Home:
+- Home decor
+- Cushions
+- Lamps
+- Kitchen products
+
+Footwear:
+- Sneakers
+- Sandals
+- Heels
+- Formal shoes
+
+Images should look like actual online-shopping product photography:
+- clean background
+- centered product
+- realistic lighting
+- consistent aspect ratio
+- high resolution
+- professional catalog photography
+
+==================================================
+PRODUCT CARD DESIGN
+==================================================
+
+Create product cards similar to a modern Indian e-commerce marketplace.
+
+Each card should contain:
+
+[Product Image]
+
+Wishlist heart icon in top-right.
+
+Product Name
+Example:
+"Embroidered Floral Kurta Set"
+
+Brand / Store
+Example:
+"by Ethnic House"
+
+Price:
+₹1,249
+
+Original price:
+₹1,599
+
+Discount:
+22% off
+
+Rating:
+★ 4.3
+
+Reviews:
+1,245 Reviews
+
+Add to Cart button.
+
+Optional:
+Quick View button on hover.
+
+Use Indian Rupee symbol ₹ EVERYWHERE.
+
+Do NOT use:
+$
+USD
+€
+£
+
+==================================================
+REALISTIC INDIAN PRICING
+==================================================
+
+Use realistic Indian e-commerce prices.
+
+Examples:
+
+Women:
+₹399
+₹599
+₹799
+₹999
+₹1,249
+₹1,499
+₹1,899
+₹2,499
+
+Men:
+₹499
+₹699
+₹899
+₹1,199
+₹1,599
+₹1,999
+
+Footwear:
+₹799
+₹999
+₹1,299
+₹1,599
+₹2,199
+
+Beauty:
+₹299
+₹499
+₹799
+₹999
+₹1,499
+
+Accessories:
+₹399
+₹699
+₹999
+₹1,299
+₹1,999
+
+Always format prices with ₹.
+
+Example:
+
+₹899
+₹1,299
+25% OFF
+
+==================================================
+NEW ARRIVALS
+==================================================
+
+Create a large "NEW ARRIVALS" section.
+
+Show 6–8 product cards horizontally on desktop.
+
+Each card should have realistic product imagery.
+
+Example products:
+
+1. Floral Printed Maxi Dress
+₹899
+₹1,299
+31% OFF
+★ 4.4
+1.2k Reviews
+
+2. Men's Slim Fit Cotton Shirt
+₹679
+₹999
+32% OFF
+★ 4.2
+890 Reviews
+
+3. Embroidered Kurta Set
+₹1,249
+₹1,499
+17% OFF
+★ 4.5
+2.1k Reviews
+
+4. Classic Leather Watch
+₹1,599
+₹2,499
+36% OFF
+★ 4.3
+560 Reviews
+
+5. Women Casual Sneakers
+₹899
+₹1,499
+40% OFF
+★ 4.4
+1.5k Reviews
+
+6. Banarasi Silk Saree
+₹2,199
+₹2,999
+27% OFF
+★ 4.6
+760 Reviews
+
+7. Trendy Backpack
+₹749
+₹1,199
+38% OFF
+★ 4.3
+1.1k Reviews
+
+8. Luxury Eau De Parfum
+₹999
+₹1,499
+33% OFF
+★ 4.5
+980 Reviews
+
+IMPORTANT:
+If real products already exist in the backend/database, use those API products instead of hardcoded products.
+
+==================================================
+CATEGORY IMAGES
+==================================================
+
+Create realistic image-based category cards.
+
+Categories:
+
+Women
+Men
+Kids
+Handbags
+Watches
+Footwear
+Jewellery
+Beauty
+Home & Living
+Gadgets
+
+Each category should use a REALISTIC PRODUCT/FASHION IMAGE.
+
+Use circular or softly rounded image containers.
+
+==================================================
+WOMEN'S SECTION
+==================================================
+
+Create:
+
+"WOMEN'S EDIT"
+
+Show realistic fashion imagery for:
+
+- Sarees
+- Kurtis
+- Dresses
+- Tops
+- Ethnic Wear
+- Western Wear
+
+Use large editorial-style images with clean captions.
+
+==================================================
+MEN'S SECTION
+==================================================
+
+Create:
+
+"MEN'S EDIT"
+
+Show realistic images for:
+
+- Shirts
+- T-Shirts
+- Jeans
+- Kurtas
+- Jackets
+- Shoes
+
+==================================================
+FEATURED STORES
+==================================================
+
+Show realistic store/banner imagery.
+
+Example stores:
+
+Ethnic House
+Urban Gentleman
+Style Studio
+Weaves & More
+Beauty Hub
+Home Comforts
+
+Each card:
+
+Store image
+Store name
+"1,240 Products"
+★ 4.5
+Visit Store
+
+==================================================
+PROMOTIONAL BANNERS
+==================================================
+
+Use realistic fashion/lifestyle images in promotional banners.
+
+Examples:
+
+"THE NEW SEASON EDIT"
+"UP TO 50% OFF"
+
+"FRESH STYLES FOR EVERY OCCASION"
+
+"SHOP NOW"
+
+Do not use real company logos or copyrighted brand campaigns.
+
+==================================================
+VISUAL QUALITY
+==================================================
+
+The final page should visually resemble a REAL premium Indian e-commerce marketplace.
+
+Important visual characteristics:
+
+- Realistic product photography
+- Indian Rupee pricing
+- Product-heavy homepage
+- Multiple shopping sections
+- Horizontal product carousels
+- Attractive category images
+- Fashion banners
+- Clean white/off-white background
+- Premium typography
+- Proper product-card spacing
+- Soft shadows
+- Rounded corners
+- Wishlist icons
+- Rating badges
+- Discount labels
+- Add-to-cart buttons
+- Hover effects
+- Smooth carousel navigation
+
+DO NOT make it look like:
+- a SaaS dashboard
+- a corporate landing page
+- a student portfolio
+- a generic React template
+
+==================================================
+IMPORTANT TECHNICAL RULE
+==================================================
+
+Preserve the existing backend and API architecture.
+
+If the existing API/database already contains products:
+USE THE REAL PRODUCT DATA.
+
+Do not replace API data with fake data.
+
+If image URLs are available in product data, render them properly.
+
+If the existing project has an image/media system, reuse it.
+
+If no product images are available, use high-quality realistic e-commerce placeholder images that visually match the required categories.
+
+Do not use broken image URLs.
+
+Add proper image fallback handling.
+
+==================================================
+FINAL CHECK
+==================================================
+
+After implementation:
+
+1. Open the homepage in browser.
+2. Check all product images.
+3. Check that prices use ₹.
+4. Check product cards.
+5. Check category images.
+6. Check Women section.
+7. Check Men section.
+8. Check New Arrivals.
+9. Check Featured Stores.
+10. Check promotional banners.
+11. Check responsive desktop/mobile layouts.
+12. Check browser console.
+13. Fix broken images.
+14. Fix layout overflow.
+15. Ensure the page looks like a polished REAL Indian e-commerce marketplace.
+
+The final homepage should feel like a real shopping platform where a customer would actually want to browse and purchase products.
